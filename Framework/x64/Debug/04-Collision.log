@@ -1,0 +1,21 @@
+﻿  Brick.cpp
+C:\Users\nang\Desktop\gamedev-intro-tutorials-master\04-Collision\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  debug.cpp
+C:\Users\nang\Desktop\gamedev-intro-tutorials-master\04-Collision\debug.cpp(11,27): error C2664: 'void OutputDebugStringA(LPCSTR)': cannot convert argument 1 from 'wchar_t [4096]' to 'LPCSTR'
+C:\Users\nang\Desktop\gamedev-intro-tutorials-master\04-Collision\debug.cpp(11,20): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\debugapi.h(55,1): message : see declaration of 'OutputDebugStringA'
+  Game.cpp
+C:\Users\nang\Desktop\gamedev-intro-tutorials-master\04-Collision\Game.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  GameObject.cpp
+C:\Users\nang\Desktop\gamedev-intro-tutorials-master\04-Collision\GameObject.cpp(1,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Goomba.cpp
+C:\Users\nang\Desktop\gamedev-intro-tutorials-master\04-Collision\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  main.cpp
+C:\Users\nang\Desktop\gamedev-intro-tutorials-master\04-Collision\main.cpp(23,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Mario.cpp
+C:\Users\nang\Desktop\gamedev-intro-tutorials-master\04-Collision\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Sprites.cpp
+C:\Users\nang\Desktop\gamedev-intro-tutorials-master\04-Collision\Sprites.h(3,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Textures.cpp
+C:\Users\nang\Desktop\gamedev-intro-tutorials-master\04-Collision\Textures.cpp(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Generating Code...
