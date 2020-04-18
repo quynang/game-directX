@@ -17,9 +17,10 @@ CGameObject::CGameObject()
 
 void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	this->dt = dt;
+	this->dt = dt; // tại sao dt = 16
 	dx = vx*dt;
 	dy = vy*dt;
+	//DebugOut(L"Deta time in object: %lu \n", dt);
 }
 
 /*
