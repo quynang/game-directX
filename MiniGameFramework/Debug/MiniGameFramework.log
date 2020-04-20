@@ -1,7 +1,0 @@
-﻿  main.cpp
-C:\Users\nang\Desktop\game-directX\MiniGameFramework\Map.h(1,9): warning C4068: unknown pragma
-C:\Users\nang\Desktop\game-directX\MiniGameFramework\TitleSet.h(1,9): warning C4068: unknown pragma
-C:\Users\nang\Desktop\game-directX\MiniGameFramework\Camera.h(1,9): warning C4068: unknown pragma
-C:\Users\nang\Desktop\game-directX\MiniGameFramework\main.cpp(251,61): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\nang\Desktop\game-directX\MiniGameFramework\main.cpp(251,42): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-  MiniGameFramework.vcxproj -> C:\Users\nang\Desktop\game-directX\Debug\MiniGameFramework.exe
