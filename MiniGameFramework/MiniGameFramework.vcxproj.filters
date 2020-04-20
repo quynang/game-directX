@@ -24,9 +24,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Mario.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Sprites.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,6 +51,9 @@
     <ClInclude Include="define.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Simon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug.cpp">
@@ -66,9 +66,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mario.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sprites.cpp">

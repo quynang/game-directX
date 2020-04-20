@@ -51,31 +51,35 @@ TitleSet* Map::getTitleSet() {
 
 void Map::Render() {
 
-    int cellStartX = mCamera->getPostion().x / FRAME_SIZE;
-    int cellStartY = mCamera->getPostion().y / FRAME_SIZE;
-    int cellEndX = ceil((mCamera->getWidth() + mCamera->getPostion().x) / FRAME_SIZE);
-    int cellEndY = (mCamera->getHeight() + mCamera->getPostion().y) / FRAME_SIZE;
+    int cellStartX = mCamera->getBound().left / FRAME_SIZE;
+    int cellStartY = mCamera->getBound().top / FRAME_SIZE;
+    int cellEndX = ceil((float)mCamera->getBound().right/ FRAME_SIZE);
+    int cellEndY = ceil((float)mCamera->getBound().bottom / FRAME_SIZE);
+    DebugOut(L"Cell start X: %d \n", cellStartX);
+    DebugOut(L"Cell start Y: %d \n", cellStartY);
+    DebugOut(L"Cell end X: %d \n", cellEndX);
+    DebugOut(L"Cell end Y: %d \n", cellEndY);
  
     vector<LPSPRITE> titleSprites = mTitleSet->getSprites();
     for(int i = cellStartY; i < cellEndY; i++)
         for (int j = cellStartX; j < cellEndX; j++) {
-            titleSprites.at(mapMatrix.at(i).at(j) - 1)->Draw(j * FRAME_SIZE -  mCamera->getPostion().x, i * FRAME_SIZE - mCamera->getPostion().y);
+            titleSprites.at(mapMatrix.at(i).at(j) - 1)->Draw(j * FRAME_SIZE - mCamera->getPostion().x, i * FRAME_SIZE - mCamera->getPostion().y);
         }
 
 }
 
-void Map::updateCameraPosition(int x, int y) {
+void Map::updateCameraPositionX(int x) {
 
     if (x > 0) {
        
         if (mCamera->getBound().right < (this->getWidth() - (FRAME_SIZE + x))) {
-            mCamera->setPostion(mCamera->getPostion().x + x, 0);
+            mCamera->setPostion(mCamera->getPostion().x + x, mCamera->getPostion().y);
         }
 
     }
     else {
         if (mCamera->getBound().left > 0) {
-            mCamera->setPostion(mCamera->getPostion().x + x, 0);
+            mCamera->setPostion(mCamera->getPostion().x + x, mCamera->getPostion().y);
         }
     }
    

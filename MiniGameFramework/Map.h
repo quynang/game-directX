@@ -24,7 +24,7 @@ public:
 	int valueAt(int i, int j);
 	TitleSet* getTitleSet();
 	void setCamera(Camera* mCamera);
-	void updateCameraPosition(int x, int y);
+	void updateCameraPositionX(int x);
 private:
 	Camera* mCamera;
 	vector< vector<int> > mapMatrix;

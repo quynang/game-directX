@@ -12,7 +12,7 @@ using namespace std;
 class Camera {
 public:
 	Camera();
-	Camera(D3DXVECTOR2 position, float camWith, float camHeight);
+	Camera(D3DXVECTOR2 position, int camWith, int camHeight);
 	~Camera();
 	float getWidth();
 	float getHeight();
@@ -21,6 +21,6 @@ public:
 	RECT getBound();
 private:
 	D3DXVECTOR2 position;
-	float camWidth;
-	float camHeight;
+	int camWidth;
+	int camHeight;
 };

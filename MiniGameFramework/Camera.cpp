@@ -2,7 +2,7 @@
 
 Camera::Camera() {}
 
-Camera::Camera(D3DXVECTOR2 position, float camWidth, float camHeight) {
+Camera::Camera(D3DXVECTOR2 position, int camWidth, int camHeight) {
 	this->position = position;
 	this->camWidth = camWidth;
 	this->camHeight = camHeight;
@@ -29,9 +29,9 @@ float Camera::getHeight() {
 
 RECT Camera::getBound() {
 	RECT bound;
-	bound.left = position.x;
+	bound.left = (int)position.x;
 	bound.right = bound.left + camWidth;
-	bound.top = position.y;
+	bound.top = (int)position.y;
 	bound.bottom = bound.top + camHeight;
 	return bound;
 }
