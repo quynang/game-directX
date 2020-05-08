@@ -81,7 +81,5 @@ void Map::updateCameraPositionX(int x) {
         if (mCamera->getBound().left > 0) {
             mCamera->setPostion(mCamera->getPostion().x + x, mCamera->getPostion().y);
         }
-    }
-   
-       
+    } 
 }
