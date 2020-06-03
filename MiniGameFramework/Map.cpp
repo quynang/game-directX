@@ -55,11 +55,7 @@ void Map::Render() {
     int cellStartY = mCamera->getBound().top / FRAME_SIZE;
     int cellEndX = ceil((float)mCamera->getBound().right/ FRAME_SIZE);
     int cellEndY = ceil((float)mCamera->getBound().bottom / FRAME_SIZE);
-    DebugOut(L"Cell start X: %d \n", cellStartX);
-    DebugOut(L"Cell start Y: %d \n", cellStartY);
-    DebugOut(L"Cell end X: %d \n", cellEndX);
-    DebugOut(L"Cell end Y: %d \n", cellEndY);
- 
+
     vector<LPSPRITE> titleSprites = mTitleSet->getSprites();
     for(int i = cellStartY; i < cellEndY; i++)
         for (int j = cellStartX; j < cellEndX; j++) {

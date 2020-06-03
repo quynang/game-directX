@@ -1,28 +1,21 @@
 /* =============================================================
 	INTRODUCTION TO GAME PROGRAMMING SE102
-	
-	SAMPLE 04 - COLLISION
+
+	SAMPLE 05 - SCENCE MANAGER
 
 	This sample illustrates how to:
 
-		1/ Implement SweptAABB algorithm between moving objects
-		2/ Implement a simple (yet effective) collision frame work
+		1/ Implement a scence manager
+		2/ Load scene from "database", add/edit/remove scene without changing code
+		3/ Dynamically move between scenes without hardcode logic
 
-	Key functions: 
-		CGame::SweptAABB
-		CGameObject::SweptAABBEx
-		CGameObject::CalcPotentialCollisions
-		CGameObject::FilterCollision
-
-		CGameObject::GetBoundingBox
-		
 ================================================================ */
 
 #include <windows.h>
 #include <d3d9.h>
 #include <d3dx9.h>
 
-#include "debug.h"
+#include "Utils.h"
 #include "Game.h"
 #include "GameObject.h"
 #include "Textures.h"
@@ -30,71 +23,19 @@
 #include "Mario.h"
 #include "Brick.h"
 #include "Goomba.h"
-#include "Map.h"
+
+#include "PlayScence.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
-#define MAIN_WINDOW_TITLE L"04 - Collision"
+#define MAIN_WINDOW_TITLE L"SAMPLE 05 - SCENCE MANAGER"
 
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 255)
-#define SCREEN_WIDTH 9*32
-#define SCREEN_HEIGHT 200
+#define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
 
 #define MAX_FRAME_RATE 120
 
-#define ID_TEX_MARIO 0
-#define ID_TEX_ENEMY 10
-#define ID_TEX_MISC 20
-#define ID_TEX_LV1 30
-
-CGame *game;
-
-CMario *mario;
-CGoomba *goomba;
-D3DXVECTOR2 position(0.0f, 12);
-Camera *mCamera = new Camera(position, 9 * 32, 5 * 32);
-Map* mMap;
-
-
-vector<LPGAMEOBJECT> objects;
-
-class CSampleKeyHander: public CKeyEventHandler
-{
-	virtual void KeyState(BYTE *states);
-	virtual void OnKeyDown(int KeyCode);
-	virtual void OnKeyUp(int KeyCode);
-};
-
-CSampleKeyHander * keyHandler; 
-
-void CSampleKeyHander::OnKeyDown(int KeyCode)
-{
-	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
-	//switch (KeyCode)
-	//{
-	//case DIK_SPACE:
-	//	mario->SetState(MARIO_STATE_JUMP);
-	//	break;
-	//case DIK_A: // reset
-	//	mario->SetState(MARIO_STATE_IDLE);
-	//	mario->SetLevel(MARIO_LEVEL_BIG);
-	//	mario->SetPosition(50.0f,0.0f);
-	//	mario->SetSpeed(0, 0);
-	//	break;
-	//}
-}
-
-void CSampleKeyHander::OnKeyUp(int KeyCode)
-{
-	DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
-}
-
-void CSampleKeyHander::KeyState(BYTE *states)
-{
-	if (game->IsKeyDown(DIK_RIGHT))
-		mMap->updateCameraPositionX(1);
-	else if (game->IsKeyDown(DIK_LEFT))
-		mMap->updateCameraPositionX(-1);
-}
+CGame* game;
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -109,22 +50,23 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-
+/*
+	Update world status for this frame
+	dt: time period between beginning of last frame and beginning of this frame
+*/
 void Update(DWORD dt)
 {
-
+	CGame::GetInstance()->GetCurrentScene()->Update(dt);
 }
 
 /*
-	Render a frame 
+	Render a frame
 */
 void Render()
 {
 	LPDIRECT3DDEVICE9 d3ddv = game->GetDirect3DDevice();
 	LPDIRECT3DSURFACE9 bb = game->GetBackBuffer();
 	LPD3DXSPRITE spriteHandler = game->GetSpriteHandler();
-	mMap->setCamera(mCamera);
-	
 
 	if (d3ddv->BeginScene())
 	{
@@ -133,11 +75,7 @@ void Render()
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
-	/*	for (int i = 0; i < objects.size(); i++)
-			objects[i]->Render();*/
-		
-
-		mMap->Render();
+		CGame::GetInstance()->GetCurrentScene()->Render();//Lớp game sẽ chứa một list scence <Id, class_Scence> hàm này lấy scence hiện tại rồi render thôi ()
 
 		spriteHandler->End();
 		d3ddv->EndScene();
@@ -181,7 +119,7 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 			hInstance,
 			NULL);
 
-	if (!hWnd) 
+	if (!hWnd)
 	{
 		OutputDebugString(L"[ERROR] CreateWindow failed");
 		DWORD ErrCode = GetLastError();
@@ -198,8 +136,8 @@ int Run()
 {
 	MSG msg;
 	int done = 0;
-	DWORD frameStart = GetTickCount();//milisecond Frame đầu tiên được load. Ví là 10 đi
-	DWORD tickPerFrame = 1000 / MAX_FRAME_RATE; // nghĩa là thời gian hiển thị 1 frame sẽ load tối đa trong 8 tick
+	DWORD frameStart = GetTickCount();
+	DWORD tickPerFrame = 1000 / MAX_FRAME_RATE;
 
 	while (!done)
 	{
@@ -213,24 +151,21 @@ int Run()
 
 		DWORD now = GetTickCount();
 
-
 		// dt: the time between (beginning of last frame) and now
 		// this frame: the frame we are about to render
 		DWORD dt = now - frameStart;
 
 		if (dt >= tickPerFrame)
 		{
-
 			frameStart = now;
 
 			game->ProcessKeyboard();
-			
-			
+
 			Update(dt);
 			Render();
 		}
 		else
-			Sleep(tickPerFrame - dt);	
+			Sleep(tickPerFrame - dt);
 	}
 
 	return 1;
@@ -242,13 +177,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	game = CGame::GetInstance();
 	game->Init(hWnd);
+	game->InitKeyboard();
 
-	keyHandler = new CSampleKeyHander();
-	game->InitKeyboard(keyHandler);
+	game->Load(L"mario-sample.txt"); // File text này là file toàn cục. Game gồm những scence nào và bắt đầu từ scence nào
 
-	mMap = new Map();
-
-	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH*2.5, SCREEN_HEIGHT*2.5, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 
 	Run();
 
