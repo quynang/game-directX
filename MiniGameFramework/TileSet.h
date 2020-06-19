@@ -10,11 +10,11 @@
 #include "define.h"
 using namespace std;
 
-class TitleSet {
+class CTileSet {
 public:
-	TitleSet(int id, LPCWSTR filePath, int numRows, int numCols);
-	~TitleSet();
-	void loadTitleSetIntoResources();
+	CTileSet(int id, LPCWSTR filePath, int numRows, int numCols);
+	~CTileSet();
+	void loadTileSetIntoResources();
 	vector<LPSPRITE> getSprites();
 private:
 	int id;
@@ -22,3 +22,4 @@ private:
 	int numCols;
 	LPCWSTR filePath;
 };
+typedef CTileSet* LPTILESET;

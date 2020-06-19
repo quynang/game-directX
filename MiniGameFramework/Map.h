@@ -4,33 +4,27 @@
 #include <iostream>
 #include <fstream>
 #include "Utils.h"
-#include "TitleSet.h"
-#include "debug.h"
-#include "Camera.h"
+#include "TileSet.h"
 #include "define.h"
 using namespace std;
 #define FRAME_WIDTH  32
 #define FRAME_HEIGHT 32
 
-class Map {
+class CMap {
+	static CMap* __instance;
 public:
-	Map();
-	~Map();
+	CMap();
+	~CMap();
 	int getWidth();
 	int getHeight();
-	void loadMap();
+	void Load(LPCWSTR gameFile);
 	void Render();
-	void parseMapMatrixFromTxt(LPCWSTR filePath);
+	void Update();
 	int valueAt(int i, int j);
-	TitleSet* getTitleSet();
-	void setCamera(Camera* mCamera);
-	void updateCameraPositionX(int x);
+	static CMap* GetInstance();
 private:
-	Camera* mCamera;
+	void _ParseSection_TILE_SET(string line);
+	void _ParseSection_MAP_MATRIX(string line);
 	vector< vector<int> > mapMatrix;
-	TitleSet* mTitleSet;
-	char* txtFilePath;
-	char* tileSetFilePath;
-	void loadResources();
-
+	LPTILESET mTitleSet;
 };
