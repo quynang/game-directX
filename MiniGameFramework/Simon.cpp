@@ -1,17 +1,20 @@
 #include <algorithm>
 #include <assert.h>
 #include "Utils.h"
-
-#include "Mario.h"
+#include <iostream>
+#include <fstream>
+#include "Simon.h"
 #include "Game.h"
-
+#include "Textures.h"
+#include "Sprites.h"
+#include "ResourceManager.h"
 #include "Portal.h"
 
-CMario::CMario(float x, float y) : CGameObject()
+CSimon::CSimon(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_BIG;
+	//level = MARIO_LEVEL_BIG;
 	untouchable = 0;
-	SetState(MARIO_STATE_IDLE);
+	SetState(SIMON_STATE_IDLE);
 
 	start_x = x;
 	start_y = y;
@@ -19,194 +22,131 @@ CMario::CMario(float x, float y) : CGameObject()
 	this->y = y;
 }
 
-void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
-{
-	// Calculate dx, dy 
-	CGameObject::Update(dt);
+#define PLAYER_SECTION_UNKNOWN -1
+#define PLAYER_SECTION_TEXTURES 2
+#define PLAYER_SECTION_SPRITES 3
+#define PLAYER_SECTION_ANIMATIONS 4
+#define PLAYER_SECTION_ANIMATION_SETS	5
+#define MAX_PLAYER_LINE 1024
+void CSimon::Load(LPCWSTR filePath) {
+	DebugOut(L"[INFO] Start loading scene resources from : %s \n", filePath);
 
-	// Simple fall down
-	vy += MARIO_GRAVITY * dt;
+	ifstream f;
+	f.open(filePath);
 
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
+	// current resource section flag
+	int section = PLAYER_SECTION_UNKNOWN;
 
-	coEvents.clear();
-
-	// turn off collision when die 
-	if (state != MARIO_STATE_DIE)
-		CalcPotentialCollisions(coObjects, coEvents);
-
-	// reset untouchable timer if untouchable time has passed
-	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
+	char str[MAX_PLAYER_LINE];
+	while (f.getline(str, MAX_PLAYER_LINE))
 	{
-		untouchable_start = 0;
-		untouchable = 0;
-	}
+		string line(str);
 
-	// No collision occured, proceed normally
-	if (coEvents.size() == 0)
-	{
-		x += dx;
-		y += dy;
-	}
-	else
-	{
-		float min_tx, min_ty, nx = 0, ny;
-		float rdx = 0;
-		float rdy = 0;
+		if (line[0] == '#') continue;	// skip comment lines	
 
-		// TODO: This is a very ugly designed function!!!!
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+		if (line == "[TEXTURES]") { section = PLAYER_SECTION_TEXTURES; continue; }
+		if (line == "[SPRITES]") {
+			section = PLAYER_SECTION_SPRITES; continue;
+		}
+		if (line == "[ANIMATIONS]") {
+			section = PLAYER_SECTION_ANIMATIONS; continue;
+		}
+		if (line == "[ANIMATION_SETS]") {
+			section = PLAYER_SECTION_ANIMATION_SETS; continue;
+		}
 
-		// how to push back Mario if collides with a moving objects, what if Mario is pushed this way into another object?
-		//if (rdx != 0 && rdx!=dx)
-		//	x += nx*abs(rdx); 
-
-		// block every object first!
-		x += min_tx * dx + nx * 0.4f;
-		y += min_ty * dy + ny * 0.4f;
-
-		if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;
-
+		if (line[0] == '[') { section = PLAYER_SECTION_UNKNOWN; continue; }
 
 		//
-		// Collision logic with other objects
+		// data section
 		//
-		for (UINT i = 0; i < coEventsResult.size(); i++)
+		switch (section)
 		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
-
-			if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
-			{
-				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-
-				// jump on top >> kill Goomba and deflect a bit 
-				if (e->ny < 0)
-				{
-					if (goomba->GetState() != GOOMBA_STATE_DIE)
-					{
-						goomba->SetState(GOOMBA_STATE_DIE);
-						vy = -MARIO_JUMP_DEFLECT_SPEED;
-					}
-				}
-				else if (e->nx != 0)
-				{
-					if (untouchable == 0)
-					{
-						if (goomba->GetState() != GOOMBA_STATE_DIE)
-						{
-							if (level > MARIO_LEVEL_SMALL)
-							{
-								level = MARIO_LEVEL_SMALL;
-								StartUntouchable();
-							}
-							else
-								SetState(MARIO_STATE_DIE);
-						}
-					}
-				}
-			} // if Goomba
-			else if (dynamic_cast<CPortal*>(e->obj))
-			{
-				CPortal* p = dynamic_cast<CPortal*>(e->obj);
-				CGame::GetInstance()->SwitchScene(p->GetSceneId());
-			}
+			case PLAYER_SECTION_TEXTURES: CResourceManager::GetInstance()->_ParseSection_TEXTURES(line); break;
+			case PLAYER_SECTION_SPRITES: CResourceManager::GetInstance()->_ParseSection_SPRITES(line); break;
+			case PLAYER_SECTION_ANIMATIONS: CResourceManager::GetInstance()->_ParseSection_ANIMATIONS(line); break;
+			case PLAYER_SECTION_ANIMATION_SETS: CResourceManager::GetInstance()->_ParseSection_ANIMATION_SETS(line); break;
 		}
 	}
 
-	// clean up collision events
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	f.close();
+
+
+	DebugOut(L"[INFO] Done loading scene resources %s\n", filePath);
+
 }
 
-void CMario::Render()
+
+
+void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+
+	CGameObject::Update(dt);
+	x += dx;
+	y += dy;
+
+	vy += SIMON_GRAVITY * dt;
+	if (y > 130) y = 130;
+	//TODO: Xử lý va chạm tại đây
+}
+
+void CSimon::Render()
 {
 	int ani = -1;
-	if (state == MARIO_STATE_DIE)
-		ani = MARIO_ANI_DIE;
-	else
-		if (level == MARIO_LEVEL_BIG)
-		{
-			if (vx == 0)
-			{
-				if (nx > 0) ani = MARIO_ANI_BIG_IDLE_RIGHT;
-				else ani = MARIO_ANI_BIG_IDLE_LEFT;
-			}
-			else if (vx > 0)
-				ani = MARIO_ANI_BIG_WALKING_RIGHT;
-			else ani = MARIO_ANI_BIG_WALKING_LEFT;
-		}
-		else if (level == MARIO_LEVEL_SMALL)
-		{
-			if (vx == 0)
-			{
-				if (nx > 0) ani = MARIO_ANI_SMALL_IDLE_RIGHT;
-				else ani = MARIO_ANI_SMALL_IDLE_LEFT;
-			}
-			else if (vx > 0)
-				ani = MARIO_ANI_SMALL_WALKING_RIGHT;
-			else ani = MARIO_ANI_SMALL_WALKING_LEFT;
-		}
-
 	int alpha = 255;
-	if (untouchable) alpha = 128;
+	switch (state) {
+	case SIMON_STATE_WALKING_RIGHT:
+		ani = SIMON_ANI_WALK_RIGHT;
+		break;
+	case SIMON_STATE_WALKING_LEFT:
+		ani = SIMON_ANI_WALK_LEFT;
+		break;
+	case SIMON_STATE_JUMP:
+		if (nx > 0) ani = SIMON_ANI_JUMP_RIGHT;
+		else ani = SIMON_ANI_JUMP_LEFT;
+		break;
+	default:
+		if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
+		else ani = SIMON_ANI_IDLE_LEFT;
+	}
 
 	animation_set->at(ani)->Render(x, y, alpha);
 
 	RenderBoundingBox();
 }
 
-void CMario::SetState(int state)
+void CSimon::SetState(int state)
 {
 	CGameObject::SetState(state);
 
 	switch (state)
 	{
-	case MARIO_STATE_WALKING_RIGHT:
-		vx = MARIO_WALKING_SPEED;
+	case SIMON_STATE_WALKING_RIGHT:
+		vx = SIMON_WALKING_SPEED;
 		nx = 1;
 		break;
-	case MARIO_STATE_WALKING_LEFT:
-		vx = -MARIO_WALKING_SPEED;
+	case SIMON_STATE_WALKING_LEFT:
+		vx = -SIMON_WALKING_SPEED;
 		nx = -1;
 		break;
-	case MARIO_STATE_JUMP:
-		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
-		vy = -MARIO_JUMP_SPEED_Y;
-		break;
-	case MARIO_STATE_IDLE:
+	case SIMON_STATE_IDLE:
 		vx = 0;
 		break;
-	case MARIO_STATE_DIE:
-		vy = -MARIO_DIE_DEFLECT_SPEED;
-		break;
+	case SIMON_STATE_JUMP:
+		vy = - SIMON_JUMP_SPEED_Y;
 	}
 }
 
-void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
+void CSimon::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	left = x;
-	top = y;
-
-	if (level == MARIO_LEVEL_BIG)
-	{
-		right = x + MARIO_BIG_BBOX_WIDTH;
-		bottom = y + MARIO_BIG_BBOX_HEIGHT;
-	}
-	else
-	{
-		right = x + MARIO_SMALL_BBOX_WIDTH;
-		bottom = y + MARIO_SMALL_BBOX_HEIGHT;
-	}
 }
 
 /*
 	Reset Mario status to the beginning state of a scene
 */
-void CMario::Reset()
+void CSimon::Reset()
 {
-	SetState(MARIO_STATE_IDLE);
-	SetLevel(MARIO_LEVEL_BIG);
+	SetState(SIMON_STATE_IDLE);
 	SetPosition(start_x, start_y);
 	SetSpeed(0, 0);
 }

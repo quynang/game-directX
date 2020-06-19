@@ -19,11 +19,6 @@
 #include "Game.h"
 #include "GameObject.h"
 #include "Textures.h"
-
-#include "Mario.h"
-#include "Brick.h"
-#include "Goomba.h"
-
 #include "PlayScence.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
@@ -31,7 +26,7 @@
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
 #define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
+#define SCREEN_HEIGHT 200
 
 #define MAX_FRAME_RATE 120
 
@@ -48,41 +43,6 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	return 0;
-}
-
-/*
-	Update world status for this frame
-	dt: time period between beginning of last frame and beginning of this frame
-*/
-void Update(DWORD dt)
-{
-	CGame::GetInstance()->GetCurrentScene()->Update(dt);
-}
-
-/*
-	Render a frame
-*/
-void Render()
-{
-	LPDIRECT3DDEVICE9 d3ddv = game->GetDirect3DDevice();
-	LPDIRECT3DSURFACE9 bb = game->GetBackBuffer();
-	LPD3DXSPRITE spriteHandler = game->GetSpriteHandler();
-
-	if (d3ddv->BeginScene())
-	{
-		// Clear back buffer with a color
-		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
-
-		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
-
-		CGame::GetInstance()->GetCurrentScene()->Render();//Lớp game sẽ chứa một list scence <Id, class_Scence> hàm này lấy scence hiện tại rồi render thôi ()
-
-		spriteHandler->End();
-		d3ddv->EndScene();
-	}
-
-	// Display back buffer content to the screen
-	d3ddv->Present(NULL, NULL, NULL, NULL);
 }
 
 HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int ScreenHeight)
@@ -132,6 +92,41 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 	return hWnd;
 }
 
+/*
+	Update world status for this frame
+	dt: time period between beginning of last frame and beginning of this frame
+*/
+void Update(DWORD dt)
+{
+	CGame::GetInstance()->GetCurrentScene()->Update(dt);
+}
+
+/*
+	Render a frame
+*/
+void Render()
+{
+	LPDIRECT3DDEVICE9 d3ddv = game->GetDirect3DDevice();
+	LPDIRECT3DSURFACE9 bb = game->GetBackBuffer();
+	LPD3DXSPRITE spriteHandler = game->GetSpriteHandler();
+
+	if (d3ddv->BeginScene())
+	{
+		// Clear back buffer with a color
+		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
+
+		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
+
+		CGame::GetInstance()->GetCurrentScene()->Render();//Lớp game sẽ chứa một list scence <Id, class_Scence> hàm này lấy scence hiện tại rồi render thôi ()
+
+		spriteHandler->End();
+		d3ddv->EndScene();
+	}
+
+	// Display back buffer content to the screen
+	d3ddv->Present(NULL, NULL, NULL, NULL);
+}
+
 int Run()
 {
 	MSG msg;
@@ -179,7 +174,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	game->Init(hWnd);
 	game->InitKeyboard();
 
-	game->Load(L"mario-sample.txt"); // File text này là file toàn cục. Game gồm những scence nào và bắt đầu từ scence nào
+	game->Load(L"Castlevania.txt"); // File text này là file toàn cục. Game gồm những scence nào và bắt đầu từ scence nào
 
 	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 

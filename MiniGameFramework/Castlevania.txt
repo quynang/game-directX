@@ -1,0 +1,5 @@
+[SETTINGS]
+start	1
+#scene list
+[SCENES]
+1	resources/lv0/scence0.txt

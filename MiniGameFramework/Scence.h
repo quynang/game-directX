@@ -21,7 +21,7 @@ public:
 };
 typedef CScene* LPSCENE;
 
-
+//To do: How this class organized?
 class CScenceKeyHandler : public CKeyEventHandler
 {
 protected:
@@ -31,5 +31,5 @@ public:
 	virtual void KeyState(BYTE* states) = 0;
 	virtual void OnKeyDown(int KeyCode) = 0;
 	virtual void OnKeyUp(int KeyCode) = 0;
-	CScenceKeyHandler(CScene* s) :CKeyEventHandler() { scence = s; }
+	CScenceKeyHandler(CScene* s) :CKeyEventHandler() { scence = s; } //
 };
