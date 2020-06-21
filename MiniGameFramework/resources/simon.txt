@@ -3,6 +3,7 @@
 0	resources/simon.png	0	129	0
 # id	left	top	right	bottom	texture_id
 [SPRITES]
+# ==== SIMON =========
 # idle right
 10001	1581	21	1597	53	0
 # walk right
@@ -18,7 +19,20 @@
 10013	46	21	62	53	0
 10014	63	21	79	53	0
 # jump left
-10015	84	21	100	53	0				
+10015	84	21	100	53	0
+# hitting standing left
+10016	1	78	25	110	0
+10017	26	78	42	110	0
+10018	43	78	67	110	0
+# hitting standing right
+10019	1573	78	1597	110	0
+10020	1556	78	1572	110	0
+10021	1531	78	1555	110	0
+#10022	1506	78	1530	110	0
+#10023	1481	78	1505	110	0
+#10024	1456	78	1480	110	0
+# ===== WEPONS =======
+				
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 
@@ -35,10 +49,14 @@
 500	10002	100	10003	100	10004	100
 #walk left
 501	10012	100	10013	100	10014	100
+# hitting standing left
+502	10016	100	10017	100	10018	100
+# hitting standing right
+503	10019	100	10020	100	10021	100
 #
 # id	ani1	ani2	ani3
 #
 [ANIMATION_SETS]
 # SIMON
-1	400	401	402	403	500	501
+1	400	401	402	403	500	501	502	503
 

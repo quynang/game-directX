@@ -80,7 +80,6 @@ void CSimon::Load(LPCWSTR filePath) {
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-
 	CGameObject::Update(dt);
 	x += dx;
 	y += dy;
@@ -92,8 +91,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CSimon::Render()
 {
+	DebugOut(L"State : %d \n", state);
 	int ani = -1;
 	int alpha = 255;
+	if (state == SIMON_STATE_STANDING_HITTING)
+		isHitting = true;
 	switch (state) {
 	case SIMON_STATE_WALKING_RIGHT:
 		ani = SIMON_ANI_WALK_RIGHT;
@@ -105,35 +107,53 @@ void CSimon::Render()
 		if (nx > 0) ani = SIMON_ANI_JUMP_RIGHT;
 		else ani = SIMON_ANI_JUMP_LEFT;
 		break;
+	case SIMON_STATE_STANDING_HITTING: 
+		if (nx > 0) ani = SIMON_ANI_STANDING_HITTING_RIGHT;
+		else ani = SIMON_ANI_STANDING_HITTING_LEFT;
+		break;
 	default:
 		if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
 		else ani = SIMON_ANI_IDLE_LEFT;
 	}
 
+	//TODO: this is dry way. Try make a seperated function.
 	animation_set->at(ani)->Render(x, y, alpha);
+	if (state == SIMON_STATE_STANDING_HITTING && animation_set->at(ani)->isLastFrame()) isHitting = false;
+	
+	if (isHitting == false) {
+		SetState(SIMON_STATE_IDLE);
+	}
 
 	RenderBoundingBox();
 }
 
+
 void CSimon::SetState(int state)
 {
-	CGameObject::SetState(state);
+	if (!isHitting) {
+		CGameObject::SetState(state);
 
-	switch (state)
-	{
-	case SIMON_STATE_WALKING_RIGHT:
-		vx = SIMON_WALKING_SPEED;
-		nx = 1;
-		break;
-	case SIMON_STATE_WALKING_LEFT:
-		vx = -SIMON_WALKING_SPEED;
-		nx = -1;
-		break;
-	case SIMON_STATE_IDLE:
-		vx = 0;
-		break;
-	case SIMON_STATE_JUMP:
-		vy = - SIMON_JUMP_SPEED_Y;
+		switch (state)
+		{
+		case SIMON_STATE_WALKING_RIGHT:
+			vx = SIMON_WALKING_SPEED;
+			nx = 1;
+			break;
+		case SIMON_STATE_WALKING_LEFT:
+			vx = -SIMON_WALKING_SPEED;
+			nx = -1;
+			break;
+		case SIMON_STATE_IDLE:
+			vx = 0;
+			break;
+		case SIMON_STATE_JUMP:
+			vy = -SIMON_JUMP_SPEED_Y;
+			break;
+		case SIMON_STATE_STANDING_HITTING:
+			vx = 0;
+			break;
+
+		}
 	}
 }
 

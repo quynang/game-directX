@@ -115,7 +115,9 @@ void CPlayScene::Render()
 {
 	//TODO
 	CMap::GetInstance()->Render();
-	player->Render();
+	for (int i = 0; i < objects.size(); i++)
+		objects[i]->Render();
+
 }
 
 /*
@@ -144,9 +146,25 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_A:
 		simon->Reset();
 		break;
+	case DIK_Z: 
+		simon->SetState(SIMON_STATE_STANDING_HITTING);
+		break;
 	}
 }
 
+void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
+{
+	CSimon* simon = ((CPlayScene*)scence)->GetPlayer();
+	switch (KeyCode)
+	{
+	case DIK_RIGHT:
+		simon->SetState(SIMON_STATE_IDLE);
+		break;
+	case DIK_LEFT:
+		simon->SetState(SIMON_STATE_IDLE);
+	}
+
+}
 void CPlayScenceKeyHandler::KeyState(BYTE* states)
 {
 	CGame* game = CGame::GetInstance();
@@ -155,8 +173,8 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 
 	if (game->IsKeyDown(DIK_RIGHT)) {
 		simon->SetState(SIMON_STATE_WALKING_RIGHT);
-	} else if (game->IsKeyDown(DIK_LEFT))
+	}
+	else if (game->IsKeyDown(DIK_LEFT))
 		simon->SetState(SIMON_STATE_WALKING_LEFT);
-	else
-		simon->SetState(SIMON_STATE_IDLE);
+
 }

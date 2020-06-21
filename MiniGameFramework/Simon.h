@@ -9,6 +9,7 @@
 #define SIMON_STATE_WALKING_RIGHT	100
 #define SIMON_STATE_WALKING_LEFT	200
 #define SIMON_STATE_JUMP			300
+#define SIMON_STATE_STANDING_HITTING	400
 
 #define SIMON_ANI_IDLE_RIGHT	0
 #define SIMON_ANI_IDLE_LEFT		1
@@ -16,6 +17,9 @@
 #define SIMON_ANI_JUMP_LEFT		3
 #define SIMON_ANI_WALK_RIGHT	4
 #define SIMON_ANI_WALK_LEFT		5
+#define SIMON_ANI_STANDING_HITTING_LEFT 6
+#define SIMON_ANI_STANDING_HITTING_RIGHT 7
+
 
 class CSimon : public CGameObject
 {
@@ -24,6 +28,7 @@ class CSimon : public CGameObject
 	DWORD untouchable_start;
 	float start_x;			// initial position of Mario at scene
 	float start_y;
+	bool isHitting = false;
 public: 
 	CSimon(float x = 0.0f, float y = 0.0f);
 	void Load(LPCWSTR filePath);

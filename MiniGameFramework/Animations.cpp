@@ -20,6 +20,7 @@ void CAnimation::Add(int spriteId, DWORD time)
 }
 
 // NOTE: sometimes Animation object is NULL ??? HOW ??? 
+// This function doesn't use dt, it called GetTickCount() by itself
 void CAnimation::Render(float x, float y, int alpha)
 {
 	DWORD now = GetTickCount();
@@ -35,7 +36,7 @@ void CAnimation::Render(float x, float y, int alpha)
 		{
 			currentFrame++;
 			lastFrameTime = now;
-			if (currentFrame == frames.size()) currentFrame = 0;
+			if (currentFrame == frames.size()) currentFrame = 0; 
 		}
 	}
 
