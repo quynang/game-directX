@@ -91,7 +91,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CSimon::Render()
 {
-	DebugOut(L"State : %d \n", state);
 	int ani = -1;
 	int alpha = 255;
 	if (state == SIMON_STATE_STANDING_HITTING)

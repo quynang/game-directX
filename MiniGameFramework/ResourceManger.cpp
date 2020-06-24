@@ -36,6 +36,8 @@ void CResourceManager::_ParseSection_SPRITES(string line)
 	int r = atoi(tokens[3].c_str());
 	int b = atoi(tokens[4].c_str());
 	int texID = atoi(tokens[5].c_str());
+	float dx = atof(tokens[6].c_str());
+	float dy = atof(tokens[7].c_str());
 
 	LPDIRECT3DTEXTURE9 tex = CTextures::GetInstance()->Get(texID);
 	if (tex == NULL)
@@ -44,7 +46,7 @@ void CResourceManager::_ParseSection_SPRITES(string line)
 		return;
 	}
 
-	CSprites::GetInstance()->Add(ID, l, t, r, b, tex);
+	CSprites::GetInstance()->Add(ID, l, t, r, b, tex, dx, dy);
 }
 
 void CResourceManager::_ParseSection_ANIMATIONS(string line)

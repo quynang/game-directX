@@ -63,9 +63,9 @@ void CGame::Init(HWND hWnd)
 /*
 	Utility function to wrap LPD3DXSPRITE::Draw
 */
-void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
+void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha, float dx, float dy )
 {
-	D3DXVECTOR3 p(x - cam_x, y - cam_y, 0);
+	D3DXVECTOR3 p(x - dx - cam_x, y - dy - cam_y, 0);
 	RECT r;
 	r.left = left;
 	r.top = top;

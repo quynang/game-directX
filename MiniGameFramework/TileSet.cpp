@@ -25,7 +25,7 @@ void CTileSet::loadTileSetIntoResources() {
 	for (int i = 0; i < numRows; i++)
 		for (int j = 0; j < numCols; j++) {
 			count++;
-			sprites->Add(id + count, j * FRAME_SIZE, i * FRAME_SIZE, j * FRAME_SIZE + FRAME_SIZE, i * FRAME_SIZE + FRAME_SIZE, _texture);
+			sprites->Add(id + count, j * FRAME_SIZE, i * FRAME_SIZE, j * FRAME_SIZE + FRAME_SIZE, i * FRAME_SIZE + FRAME_SIZE, _texture, 0, 0);
 		}
 			
 }
