@@ -36,6 +36,8 @@ public:
 		else return false;
 	};
 
+	int GetCurrentFrame() {return currentFrame;};
+
 	void Render(float x, float y, int alpha = 255);
 };
 

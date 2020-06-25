@@ -49,8 +49,7 @@ void CPlayScene::_ParseSection_PLAYER(string line)
 	player = new CSimon(x, y);
 	player->Load(path);
 	int ani_set_id = atoi(tokens[3].c_str());
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-	player->SetAnimationSet(ani_set);
+	
 	objects.push_back(player);
 	
 }
@@ -78,6 +77,19 @@ void CPlayScene::Load()
 		if (line == "[PLAYER]") {
 			section = SCENE_SECTION_PLAYER; continue;
 		}
+		if (line == "[TEXTURES]") { section = SCENE_SECTION_TEXTURES; continue; }
+		if (line == "[SPRITES]") {
+			section = SCENE_SECTION_SPRITES; continue;
+		}
+		if (line == "[ANIMATIONS]") {
+			section = SCENE_SECTION_ANIMATIONS; continue;
+		}
+		if (line == "[ANIMATION_SETS]") {
+			section = SCENE_SECTION_ANIMATION_SETS; continue;
+		}
+		if (line == "[OBJECTS]") {
+			section = SCENE_SECTION_OBJECTS; continue;
+		}
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 		//
@@ -87,6 +99,11 @@ void CPlayScene::Load()
 		{
 		case SCENE_SECTION_MAP: _ParseSection_MAP(line); break;
 		case SCENE_SECTION_PLAYER: _ParseSection_PLAYER(line); break;
+		case SCENE_SECTION_TEXTURES: CResourceManager::GetInstance()->_ParseSection_TEXTURES(line); break;
+		case SCENE_SECTION_SPRITES: CResourceManager::GetInstance()->_ParseSection_SPRITES(line); break;
+		case SCENE_SECTION_ANIMATIONS: CResourceManager::GetInstance()->_ParseSection_ANIMATIONS(line); break;
+		case SCENE_SECTION_ANIMATION_SETS: CResourceManager::GetInstance()->_ParseSection_ANIMATION_SETS(line); break;
+		case SCENE_SECTION_OBJECTS: CResourceManager::GetInstance()->_ParseSection_OBJECTS(line, objects); break;
 		}
 	}
 
@@ -170,7 +187,9 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	CGame* game = CGame::GetInstance();
 	CMap* map = CMap::GetInstance();
 	CSimon* simon = ((CPlayScene*)scence)->GetPlayer();
-
+	if (game->IsKeyDown(DIK_Z)) {
+		simon->SetState(SIMON_STATE_STANDING_HITTING);
+	}
 	if (game->IsKeyDown(DIK_RIGHT)) {
 		simon->SetState(SIMON_STATE_WALKING_RIGHT);
 	}

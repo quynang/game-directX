@@ -4,3 +4,17 @@ resources/lv0/map-lv0.txt
 # filePath	x	y	ani_set_id	extra_settings per object type
 # SIMON
 resources/simon.txt	50.0	130	1
+[TEXTURES]
+1	resources/items.png	0	128	0
+# id	left	top	right	bottom	texture_id	dx	dy
+[SPRITES]
+100	175	3	191	33	1	0	0
+101	192	1	208	33	1	0	2
+[ANIMATIONS]
+1	100	100	101	100
+[ANIMATION_SETS]
+3	1
+[OBJECTS]
+# type	x	y	ani_set_id	extra_settings per object type
+# Tourch flame
+0	237	130	3

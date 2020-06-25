@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject.h"
-
+#include "Whip.h"
 #define SIMON_WALKING_SPEED		0.07f 
 #define SIMON_JUMP_SPEED_Y		0.3f
 #define SIMON_GRAVITY			0.002f
@@ -26,9 +26,13 @@ class CSimon : public CGameObject
 	int level;
 	int untouchable;
 	DWORD untouchable_start;
-	float start_x;			// initial position of Mario at scene
+	float start_x;
 	float start_y;
 	bool isHitting = false;
+	bool isJumping = false;
+	CWhip* whip;
+	void UseWhip(int currentFrame);
+
 public: 
 	CSimon(float x = 0.0f, float y = 0.0f);
 	void Load(LPCWSTR filePath);
