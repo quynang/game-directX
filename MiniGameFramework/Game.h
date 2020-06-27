@@ -18,7 +18,7 @@ using namespace std;
 
 class CGame
 {
-	static CGame* __instance;
+	static CGame * __instance;
 	HWND hWnd;									// Window handle
 
 	LPDIRECT3D9 d3d = NULL;						// Direct3D handle
@@ -74,9 +74,9 @@ public:
 		float st,
 		float sr,
 		float sb,
-		float& t,
-		float& nx,
-		float& ny);
+		float &t,
+		float &nx,
+		float &ny);
 
 	LPDIRECT3DDEVICE9 GetDirect3DDevice() { return this->d3ddv; }
 	LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; }
@@ -85,7 +85,7 @@ public:
 	void SetCamPos(float x, float y) { cam_x = x; cam_y = y; }
 	void GetCamPos(float& x, float& y) { x = this->cam_x; y = this->cam_y; }
 
-	static CGame* GetInstance();
+	static CGame * GetInstance();
 
 	~CGame();
 };

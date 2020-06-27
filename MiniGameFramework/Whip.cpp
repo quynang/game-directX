@@ -5,6 +5,7 @@
 #include <fstream>
 #include "Whip.h"
 #include "Game.h"
+#include "TourchFlame.h"
 
 CWhip::CWhip(float x, float y) : CGameObject()
 {
@@ -12,11 +13,28 @@ CWhip::CWhip(float x, float y) : CGameObject()
 	level = WEAPON_LV1;
 	this->x = x;
 	this->y = y;
+	this->vx = 0; 
+	this->vy = 0;
+
 }
 
 void CWhip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt);
+	vector<LPGAMEOBJECT> collidingObjects;
+	if (state == WEAPON_STATE_CRACK) {
+		this->CheckColliding(coObjects, collidingObjects);
+		for (UINT i = 0; i < collidingObjects.size(); i++) {
+			if (dynamic_cast<CTourchFlame*>(collidingObjects.at(i))) {
+				CTourchFlame *goomba = dynamic_cast<CTourchFlame *>(collidingObjects.at(i));
+				goomba->SetVisible(false);
+			}
+				
+		}
+	
+		
+	}
+
 }
 
 
@@ -38,11 +56,6 @@ void CWhip::Render()
 		break;
 	}
 
-	DebugOut(L"[INFO] Whip STATE: %d \n", state);
-
-
-	DebugOut(L"[INFO] Whip ani id: %d \n", ani);
-
 	animation_set->at(ani)->Render(x, y, alpha);
 
 }
@@ -53,6 +66,11 @@ void CWhip::SetState(int state)
 	CGameObject::SetState(state);
 }
 
+
 void CWhip::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
+	left = x;
+	top = y;
+	right = x + 24;
+	bottom = y + 8;
 }

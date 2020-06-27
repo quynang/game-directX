@@ -6,7 +6,7 @@
 
 #include "PlayScence.h"
 
-CGame* CGame::__instance = NULL;
+CGame * CGame::__instance = NULL;
 
 /*
 	Initialize DirectX, create a Direct3D device for rendering within the window, initial Sprite library for
@@ -212,7 +212,7 @@ void CGame::SweptAABB(
 	float ml, float mt, float mr, float mb,
 	float dx, float dy,
 	float sl, float st, float sr, float sb,
-	float& t, float& nx, float& ny)
+	float &t, float &nx, float &ny)
 {
 
 	float dx_entry, dx_exit, tx_entry, tx_exit;
@@ -306,7 +306,7 @@ void CGame::SweptAABB(
 
 }
 
-CGame* CGame::GetInstance()
+CGame * CGame::GetInstance()
 {
 	if (__instance == NULL) __instance = new CGame();
 	return __instance;

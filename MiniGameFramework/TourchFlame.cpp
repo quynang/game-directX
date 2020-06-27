@@ -1,14 +1,21 @@
 #include "TourchFlame.h"
 
+
+CTourchFlame::CTourchFlame() {
+	isVisible = true;
+}
 void CTourchFlame::Render()
-{	
-	animation_set->at(0)->Render(x, y);
+{
+	if (isVisible) {
+		animation_set->at(0)->Render(x, y);
+		//RenderBoundingBox();
+	}
 }
 
-void CTourchFlame::GetBoundingBox(float& l, float& t, float& r, float& b)
+void CTourchFlame::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	l = x;
-	t = y;
-	r = x + 16;
-	b = y + 30;
+	left = x;
+	top = y;
+	right = x + 16;
+	bottom = y + 30;
 }

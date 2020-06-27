@@ -108,7 +108,7 @@ void CPlayScene::Load()
 	}
 
 	f.close();
-
+	CTextures::GetInstance()->Add(-100, L"resources\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
@@ -125,7 +125,18 @@ void CPlayScene::Update(DWORD dt)
 	if (cx < 0) cx = 0;
 	if (cx > 410) cx = 410;
 	CGame::GetInstance()->SetCamPos(cx, 10.0f /*cy*/);
-	player->Update(dt);
+	vector<LPGAMEOBJECT> coObjects;
+	for (size_t i = 1; i < objects.size(); i++)
+	{
+		coObjects.push_back(objects[i]);
+	}
+
+	
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		objects[i]->Update(dt, &coObjects);
+	}
+
 }
 
 void CPlayScene::Render()

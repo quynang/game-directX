@@ -10,16 +10,16 @@
 
 CGameObject::CGameObject()
 {
-	x = y = 0; // là tọa đồ so với word
+	x = y = 0;
 	vx = vy = 0;
-	nx = 1;	//n là phương
+	nx = 1;	
 }
 
-void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	this->dt = dt;
-	dx = vx * dt; //Hàm update này để tính toán quảng đường trong thời gian dt. Chưa set vị trí của gameObject. 
-	dy = vy * dt;
+	dx = vx*dt;
+	dy = vy*dt;
 }
 
 /*
@@ -37,8 +37,8 @@ LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 	float svx, svy;
 	coO->GetSpeed(svx, svy);
 
-	float sdx = svx * dt;
-	float sdy = svy * dt;
+	float sdx = svx*dt;
+	float sdy = svy*dt;
 
 	// (rdx, rdy) is RELATIVE movement distance/velocity 
 	float rdx = this->dx - sdx;
@@ -53,20 +53,19 @@ LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 		t, nx, ny
 	);
 
-	CCollisionEvent* e = new CCollisionEvent(t, nx, ny, rdx, rdy, coO);
+	CCollisionEvent * e = new CCollisionEvent(t, nx, ny, rdx, rdy, coO);
 	return e;
 }
 
 /*
-	Calculate potential collisions with the list of colliable objects
-
+	Calculate potential collisions with the list of colliable objects 	
 	coObjects: the list of colliable objects
 	coEvents: list of potential collisions
 */
 void CGameObject::CalcPotentialCollisions(
-	vector<LPGAMEOBJECT>* coObjects,
-	vector<LPCOLLISIONEVENT>& coEvents)
-{
+	vector<LPGAMEOBJECT> *coObjects, 
+	vector<LPCOLLISIONEVENT> &coEvents)
+{	
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
@@ -81,10 +80,10 @@ void CGameObject::CalcPotentialCollisions(
 }
 
 void CGameObject::FilterCollision(
-	vector<LPCOLLISIONEVENT>& coEvents,
-	vector<LPCOLLISIONEVENT>& coEventsResult,
-	float& min_tx, float& min_ty,
-	float& nx, float& ny, float& rdx, float& rdy)
+	vector<LPCOLLISIONEVENT> &coEvents,
+	vector<LPCOLLISIONEVENT> &coEventsResult,
+	float &min_tx, float &min_ty, 
+	float &nx, float &ny, float &rdx, float &rdy)
 {
 	min_tx = 1.0f;
 	min_ty = 1.0f;
@@ -121,7 +120,7 @@ void CGameObject::RenderBoundingBox()
 
 	LPDIRECT3DTEXTURE9 bbox = CTextures::GetInstance()->Get(ID_TEX_BBOX);
 
-	float l, t, r, b;
+	float l, t, r, b; 
 
 	GetBoundingBox(l, t, r, b);
 	rect.left = 0;
@@ -129,7 +128,29 @@ void CGameObject::RenderBoundingBox()
 	rect.right = (int)r - (int)l;
 	rect.bottom = (int)b - (int)t;
 
-	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 100);
+}
+
+/* This method handle craked whip. Because Whip have special rendering and it don't have vx, vy....
+	So, we can't use CalcPotentialCollisions in this case.
+*/
+void CGameObject::CheckColliding(vector<LPGAMEOBJECT>* coObjects,  vector<LPGAMEOBJECT> &collidingObjects) {
+
+	for (UINT i = 0; i < coObjects->size(); i++)
+	{
+
+		LPGAMEOBJECT thatObject = coObjects->at(i);
+		float this_l, this_t, this_r, this_b;
+		float that_l, that_t, that_r, that_b;
+		GetBoundingBox(this_l, this_t, this_r, this_b);
+		thatObject->GetBoundingBox(that_l, that_t, that_r, that_b);
+
+		float left = that_l - this_r;
+		float top = that_b - this_t;
+		float right = that_r - this_l;
+		float bottom = that_t - this_b;
+		if (!(left > 0 || right < 0 || top < 0 || bottom > 0)) collidingObjects.push_back(coObjects->at(i));
+	}
 }
 
 

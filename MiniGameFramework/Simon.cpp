@@ -70,7 +70,7 @@ void CSimon::Load(LPCWSTR filePath) {
 
 	f.close();
 
-	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
 	LPANIMATION_SET ani_set = animation_sets->Get(1);
 	LPANIMATION_SET whip_ani_set = animation_sets->Get(2);
 	this->SetAnimationSet(ani_set);
@@ -84,15 +84,18 @@ void CSimon::Load(LPCWSTR filePath) {
 
 
 
-void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
-	x += dx;
-	y += dy;
-
-	vy += SIMON_GRAVITY * dt;
-	if (y > 130) y = 130;
+	vy += SIMON_GRAVITY*dt;
+	
 	//TODO: Xử lý va chạm tại đây
+	if(state == SIMON_STATE_STANDING_HITTING) whip->Update(dt, coObjects);
+
+	x += dx; 
+	y += dy;
+	if (y > 130) y = 130;
+	
 }
 
 void CSimon::Render()
@@ -134,7 +137,7 @@ void CSimon::Render()
 		SetState(SIMON_STATE_IDLE);
 	}
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CSimon::UseWhip(int currentFrame) {
@@ -154,6 +157,7 @@ void CSimon::UseWhip(int currentFrame) {
 			if (nx > 0) whip->SetPosition(this->x + 20, this->y + 6);
 			else whip->SetPosition(this->x - 30, this->y + 6);
 			whip->SetState(WEAPON_STATE_CRACK);
+			//whip->RenderBoundingBox();
 			break;
 	};
 
@@ -189,8 +193,12 @@ void CSimon::SetState(int state)
 	}
 }
 
-void CSimon::GetBoundingBox(float& left, float& top, float& right, float& bottom)
+void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
+	left = x;
+	top = y;
+	right = x + 16;
+	bottom = y + 30;
 }
 
 

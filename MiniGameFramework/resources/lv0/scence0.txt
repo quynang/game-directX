@@ -18,3 +18,5 @@ resources/simon.txt	50.0	130	1
 # type	x	y	ani_set_id	extra_settings per object type
 # Tourch flame
 0	237	130	3
+0	250	130	3
+
