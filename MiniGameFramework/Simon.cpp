@@ -12,7 +12,6 @@
 
 CSimon::CSimon(float x, float y) : CGameObject()
 {
-	//level = MARIO_LEVEL_BIG;
 	untouchable = 0;
 	SetState(SIMON_STATE_IDLE);
 
@@ -71,6 +70,13 @@ void CSimon::Load(LPCWSTR filePath) {
 
 	f.close();
 
+	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
+	LPANIMATION_SET ani_set = animation_sets->Get(1);
+	LPANIMATION_SET whip_ani_set = animation_sets->Get(2);
+	this->SetAnimationSet(ani_set);
+	whip = new CWhip(0, 0);
+	whip->SetAnimationSet(whip_ani_set);
+	//DebugOut(L"[INFO] whip animation sets %d\n", whip_ani_set->size());
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", filePath);
 
@@ -78,23 +84,25 @@ void CSimon::Load(LPCWSTR filePath) {
 
 
 
-void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
-	x += dx;
-	y += dy;
-
-	vy += SIMON_GRAVITY * dt;
-	if (y > 130) y = 130;
+	vy += SIMON_GRAVITY*dt;
+	
 	//TODO: Xử lý va chạm tại đây
+	if(state == SIMON_STATE_STANDING_HITTING) whip->Update(dt, coObjects);
+
+	x += dx; 
+	y += dy;
+	if (y > 130) y = 130;
+	
 }
 
 void CSimon::Render()
 {
 	int ani = -1;
 	int alpha = 255;
-	if (state == SIMON_STATE_STANDING_HITTING)
-		isHitting = true;
+		
 	switch (state) {
 	case SIMON_STATE_WALKING_RIGHT:
 		ani = SIMON_ANI_WALK_RIGHT;
@@ -105,10 +113,12 @@ void CSimon::Render()
 	case SIMON_STATE_JUMP:
 		if (nx > 0) ani = SIMON_ANI_JUMP_RIGHT;
 		else ani = SIMON_ANI_JUMP_LEFT;
+		isJumping = true;
 		break;
 	case SIMON_STATE_STANDING_HITTING: 
-		if (nx > 0) ani = SIMON_ANI_STANDING_HITTING_RIGHT;
+		if (nx > 0) ani = SIMON_ANI_STANDING_HITTING_RIGHT; 
 		else ani = SIMON_ANI_STANDING_HITTING_LEFT;
+		isHitting = true;
 		break;
 	default:
 		if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
@@ -117,19 +127,46 @@ void CSimon::Render()
 
 	//TODO: this is dry way. Try make a seperated function.
 	animation_set->at(ani)->Render(x, y, alpha);
-	if (state == SIMON_STATE_STANDING_HITTING && animation_set->at(ani)->isLastFrame()) isHitting = false;
+	if(isHitting) UseWhip(animation_set->at(ani)->GetCurrentFrame());
+
+	if (isHitting == true && animation_set->at(ani)->isLastFrame()) isHitting = false;
+	if (isJumping == true && animation_set->at(ani)->isLastFrame()) isJumping = false;
+
 	
-	if (isHitting == false) {
+	if (isHitting == false || isJumping == false) {
 		SetState(SIMON_STATE_IDLE);
 	}
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
+void CSimon::UseWhip(int currentFrame) {
+	whip->SetDirection(nx);
+	switch(currentFrame) {
+		case 0:
+			if(nx > 0) whip->SetPosition(this->x - 15, this->y + 6);
+			else whip->SetPosition(this->x + 24, this->y + 6);
+			whip->SetState(WEAPON_STATE_SETUP_1);
+			break;
+		case 1:
+			if (nx > 0) whip->SetPosition(this->x - 16, this->y + 6);
+			else whip->SetPosition(this->x + 16, this->y + 5);
+			whip->SetState(WEAPON_STATE_SETUP_2);
+			break;
+		case 2: 
+			if (nx > 0) whip->SetPosition(this->x + 20, this->y + 6);
+			else whip->SetPosition(this->x - 30, this->y + 6);
+			whip->SetState(WEAPON_STATE_CRACK);
+			//whip->RenderBoundingBox();
+			break;
+	};
+
+	whip->Render();
+}
 
 void CSimon::SetState(int state)
 {
-	if (!isHitting) {
+	if (!isHitting && !isJumping) {
 		CGameObject::SetState(state);
 
 		switch (state)
@@ -156,9 +193,14 @@ void CSimon::SetState(int state)
 	}
 }
 
-void CSimon::GetBoundingBox(float& left, float& top, float& right, float& bottom)
+void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
+	left = x;
+	top = y;
+	right = x + 16;
+	bottom = y + 30;
 }
+
 
 /*
 	Reset Mario status to the beginning state of a scene

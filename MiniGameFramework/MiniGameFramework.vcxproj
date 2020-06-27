@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -138,7 +138,9 @@
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="TileSet.h" />
+    <ClInclude Include="TourchFlame.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="Whip.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp" />
@@ -154,7 +156,9 @@
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="TileSet.cpp" />
+    <ClCompile Include="TourchFlame.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="Whip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MiniGameFramework.rc" />

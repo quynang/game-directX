@@ -1,6 +1,8 @@
 #include "ResourceManager.h"
 #include <iostream>
 #include <fstream>
+#include "GameObject.h"
+#include "TourchFlame.h"
 
 CResourceManager* CResourceManager::__instance = NULL;
 CResourceManager* CResourceManager::GetInstance()
@@ -98,9 +100,38 @@ void CResourceManager::_ParseSection_ANIMATION_SETS(string line)
 	Parse a line in section [OBJECTS]
 */
 
-void CResourceManager::_ParseSection_OBJECTS()
+void CResourceManager::_ParseSection_OBJECTS(string line, vector<LPGAMEOBJECT> &objects)
 {
 	//TODO
+	vector<string> tokens = split(line);
+
+	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+
+	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
+
+	int object_type = atoi(tokens[0].c_str());
+	float x = atof(tokens[1].c_str());
+	float y = atof(tokens[2].c_str());
+	int ani_set_id = atoi(tokens[3].c_str());
+	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+	CGameObject* obj = NULL;
+	switch (object_type)
+	{
+	case 0:
+		obj = new CTourchFlame();
+	break;
+	default:
+		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
+		return;
+	}
+
+	obj->SetPosition(x, y);
+
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+
+	obj->SetAnimationSet(ani_set);
+	objects.push_back(obj);
+
 }
 
 #define SCENE_SECTION_UNKNOWN -1
