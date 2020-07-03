@@ -1,12 +1,12 @@
 [MAP]
-resources/lv0/map-lv0.txt
+resources/lv1/map-lv1.txt
 [PLAYER]
 # filePath	x	y	ani_set_id	extra_settings per object type
 # SIMON
 resources/simon.txt	50.0	110	1
 [TEXTURES]
 10	resources/items.png	0	128	0
-11	resources/lv0/brick-lv0.png	0	128	0
+11	resources/lv1/brick-lv1.png	0	128	0
 # id	left	top	right	bottom	texture_id	dx	dy
 [SPRITES]
 #TourchFlame

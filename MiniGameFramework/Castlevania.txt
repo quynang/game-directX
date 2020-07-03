@@ -1,6 +1,7 @@
 [SETTINGS]
-start	1
+start	3
 #scene list
 [SCENES]
-1	resources/lv0/scence0.txt
-2	resources/lv1-a/scence1A.txt
+1	resources/lv1/scence1.txt
+2	resources/lv2/scence2.txt
+3	resources/lv3/scence3.txt

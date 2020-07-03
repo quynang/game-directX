@@ -1,11 +1,11 @@
 [MAP]
-resources/lv1-a/map-lv1-a.txt
+resources/lv2/map-lv2.txt
 [PLAYER]
 # filePath	x	y	ani_set_id	extra_settings per object type
 # SIMON
 resources/simon.txt	50.0	110	1
 [TEXTURES]
-11	resources/lv1-a/brick.png	0	128	0
+11	resources/lv2/brick.png	0	128	0
 # id	left	top	right	bottom	texture_id	dx	dy
 [SPRITES]
 #Brick

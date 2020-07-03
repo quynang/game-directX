@@ -1,0 +1,6 @@
+[MAP]
+resources/lv3/map-lv3.txt
+[PLAYER]
+# filePath	x	y	ani_set_id	extra_settings per object type
+# SIMON
+resources/simon.txt	50.0	110	1

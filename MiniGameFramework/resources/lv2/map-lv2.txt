@@ -1,6 +1,6 @@
 [TILE_SET]
 #id	filePath	num_rows	num_cols
-0	resources/lv1-a/tile-set-lv1-a.png	2	7
+0	resources/lv2/tile-set-lv2.png	2	7
 [MAP_MATRIX]
 1,2,3,3,4,5,2,6
 1,2,3,4,3,7,2,6
