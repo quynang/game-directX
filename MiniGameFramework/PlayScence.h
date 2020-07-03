@@ -25,11 +25,12 @@ protected:
 
 public:
 	CPlayScene(int id, LPCWSTR filePath);
-
+	
 	virtual void Load();
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	virtual void AddObject(LPGAMEOBJECT object);
 
 	CSimon* GetPlayer() { return player; }
 
@@ -43,5 +44,6 @@ public:
 	virtual void OnKeyDown(int KeyCode);
 	virtual void OnKeyUp(int KeyCode);
 	CPlayScenceKeyHandler(CScene* s) :CScenceKeyHandler(s) {};
+	
 };
 

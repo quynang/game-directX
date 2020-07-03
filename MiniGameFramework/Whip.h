@@ -18,25 +18,35 @@
 
 
 #define WEAPON_LV2_ANI_SETUP_1_LEFT	6
-#define WEAPON_LV2_ANI_SETUP_2_LEFT	7
-#define WEAPON_LV2_ANI_CRACK_LEFT	8
+#define WEAPON_LV2_ANI_SETUP_2_LEFT	8
+#define WEAPON_LV2_ANI_CRACK_LEFT	10
 
-#define WEAPON_LV2_ANI_SETUP_1_RIGHT	9
-#define WEAPON_LV2_ANI_SETUP_2_RIGHT	10
+#define WEAPON_LV2_ANI_SETUP_1_RIGHT	7
+#define WEAPON_LV2_ANI_SETUP_2_RIGHT	9
 #define WEAPON_LV2_ANI_CRACK_RIGHT	11
 
 #define WEAPON_LV3_ANI_SETUP_1_LEFT	12
-#define WEAPON_LV3_ANI_SETUP_2_LEFT	13
-#define WEAPON_LV3_ANI_CRACK_LEFT	14
+#define WEAPON_LV3_ANI_SETUP_2_LEFT	14
+#define WEAPON_LV3_ANI_CRACK_LEFT	16
 
-#define WEAPON_LV3_ANI_SETUP_1_RIGHT	15
-#define WEAPON_LV3_ANI_SETUP_2_RIGHT	16
+#define WEAPON_LV3_ANI_SETUP_1_RIGHT	13
+#define WEAPON_LV3_ANI_SETUP_2_RIGHT	15
 #define WEAPON_LV3_ANI_CRACK_RIGHT	17
+
+#define WHIP_LV1_BOX_WIDTH	24
+#define WHIP_LV1_BOX_HEIGHT	8
+
+#define WHIP_LV2_BOX_WIDTH	24
+#define WHIP_LV2_BOX_HEIGHT	6
+
+#define WHIP_LV3_BOX_WIDTH	40
+#define WHIP_LV3_BOX_HEIGHT	6
+
 
 class CWhip : public CGameObject
 {
 	bool isVisible = false;
-	int level = WEAPON_LV1;
+	int level = WEAPON_LV2;
 	int aniSetup1ByCurrentLevel() {
 		switch (level) {
 		case WEAPON_LV1:
@@ -61,8 +71,8 @@ class CWhip : public CGameObject
 			if (nx > 0) return WEAPON_LV1_ANI_SETUP_2_RIGHT;
 			else return WEAPON_LV2_ANI_SETUP_2_LEFT;
 		case WEAPON_LV3:
-			if (nx > 0) return WEAPON_LV1_ANI_SETUP_2_RIGHT;
-			else return WEAPON_LV2_ANI_SETUP_2_LEFT;
+			if (nx > 0) return WEAPON_LV3_ANI_SETUP_2_RIGHT;
+			else return WEAPON_LV3_ANI_SETUP_2_LEFT;
 		};
 	};
 
@@ -91,7 +101,8 @@ public:
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
-	void setLevel(int level) { this->level = level; };
+	void ResetLevel() { level = WEAPON_LV1; }
+	void UpgradeLevel();
 
 	void SetState(int state);
 };

@@ -141,11 +141,15 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
-	//TODO
+
 	CMap::GetInstance()->Render();
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+}
 
+void CPlayScene::AddObject(LPGAMEOBJECT obj)
+{
+	objects.push_back(obj);
 }
 
 /*

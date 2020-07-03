@@ -1,0 +1,36 @@
+[MAP]
+resources/lv1-a/map-lv1-a.txt
+[PLAYER]
+# filePath	x	y	ani_set_id	extra_settings per object type
+# SIMON
+resources/simon.txt	50.0	110	1
+[TEXTURES]
+11	resources/lv1-a/brick.png	0	128	0
+# id	left	top	right	bottom	texture_id	dx	dy
+[SPRITES]
+#Brick
+100001	0	0	16	16	11	0	0
+[ANIMATIONS]
+1001	100001	100
+[ANIMATION_SETS]
+#brick
+101	1001
+[OBJECTS]
+# type	x	y	ani_set_id	item_type
+# 1: brick lv0
+#---- Brick----
+1	0	176	101	-1
+1	16	176	101	-1
+1	32	176	101	-1
+1	48	176	101	-1
+1	64	176	101	-1
+1	96	176	101	-1
+1	112	176	101	-1
+1	128	176	101	-1
+1	144	176	101	-1
+1	160	176	101	-1
+1	176	176	101	-1
+1	192	176	101	-1
+1	208	176	101	-1
+1	224	176	101	-1
+1	240	176	101	-1
