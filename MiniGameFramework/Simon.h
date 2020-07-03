@@ -10,6 +10,7 @@
 #define SIMON_STATE_WALKING_LEFT	200
 #define SIMON_STATE_JUMP			300
 #define SIMON_STATE_STANDING_HITTING	400
+#define SIMON_STATE_FREEZE	500
 
 #define SIMON_ANI_IDLE_RIGHT	0
 #define SIMON_ANI_IDLE_LEFT		1
@@ -19,6 +20,10 @@
 #define SIMON_ANI_WALK_LEFT		5
 #define SIMON_ANI_STANDING_HITTING_LEFT 6
 #define SIMON_ANI_STANDING_HITTING_RIGHT 7
+#define SIMON_ANI_COLOR_LEFT	8
+#define SIMON_ANI_COLOR_RIGHT	9
+
+#define SIMON_FREEZE_TIME	1000
 
 
 class CSimon : public CGameObject
@@ -30,7 +35,9 @@ class CSimon : public CGameObject
 	float start_y;
 	bool isHitting = false;
 	bool isJumping = false;
+	bool isFreeze = false;
 	CWhip* whip;
+	DWORD freezeTimer = 0;
 	void UseWhip(int currentFrame);
 
 public: 
@@ -43,4 +50,5 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	void Reset();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	void StartFreezeState();
 };

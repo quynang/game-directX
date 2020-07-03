@@ -92,6 +92,13 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 	vy += SIMON_GRAVITY*dt;
 
+	if (isFreeze && (GetTickCount() - freezeTimer > SIMON_FREEZE_TIME)) 
+	{
+		freezeTimer = 0;
+		isFreeze = false;
+		SetState(SIMON_STATE_IDLE);
+	}
+
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -120,7 +127,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (ny!=0) vy = 0;
 
 
-
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
@@ -130,6 +136,8 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CWheapon* wheapon = dynamic_cast<CWheapon*>(e->obj);
 				wheapon->SetVisible(false);
 				whip->UpgradeLevel();
+				SetState(SIMON_STATE_FREEZE);
+				StartFreezeState();
 			}
 
 			if (dynamic_cast<CTourchFlame*>(e->obj)) {
@@ -169,16 +177,22 @@ void CSimon::Render()
 		else ani = SIMON_ANI_STANDING_HITTING_LEFT;
 		isHitting = true;
 		break;
+	case SIMON_STATE_FREEZE:
+		if (nx > 0) ani = SIMON_ANI_COLOR_RIGHT; 
+		else ani = SIMON_ANI_COLOR_LEFT;
+		break;
 	default:
 		if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
 		else ani = SIMON_ANI_IDLE_LEFT;
 	}
 
+	
 	animation_set->at(ani)->Render(x, y, alpha);
 	if(isHitting) UseWhip(animation_set->at(ani)->GetCurrentFrame());
 
 	if (isHitting == true && animation_set->at(ani)->isLastFrame()) isHitting = false;
 	if (isJumping == true && animation_set->at(ani)->isLastFrame()) isJumping = false;
+	
 
 	
 	if (isHitting == false || isJumping == false) {
@@ -186,6 +200,11 @@ void CSimon::Render()
 	}
 
 	//RenderBoundingBox();
+}
+
+void CSimon::StartFreezeState() {
+	isFreeze = true;
+	freezeTimer = GetTickCount();
 }
 
 void CSimon::UseWhip(int currentFrame) {
@@ -214,7 +233,7 @@ void CSimon::UseWhip(int currentFrame) {
 
 void CSimon::SetState(int state)
 {
-	if (!isHitting && !isJumping) {
+	if (!isHitting && !isJumping && !isFreeze) {
 		CGameObject::SetState(state);
 
 		switch (state)
@@ -235,6 +254,10 @@ void CSimon::SetState(int state)
 			break;
 		case SIMON_STATE_STANDING_HITTING:
 			vx = 0;
+			break;
+		case SIMON_STATE_FREEZE:
+			vx = 0;
+			vy = 0;
 			break;
 
 		}

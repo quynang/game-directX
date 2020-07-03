@@ -49,7 +49,7 @@ void CWhip::Render()
 		break;
 	case WEAPON_STATE_CRACK:
 		ani = aniCrackByCurrentLevel();
-		RenderBoundingBox();
+		//RenderBoundingBox();
 		break;
 	}
 
