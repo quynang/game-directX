@@ -9,6 +9,8 @@
 #include "Sprites.h"
 #include "ResourceManager.h"
 #include "Portal.h"
+#include "Item.h"
+#include "TourchFlame.h"
 
 CSimon::CSimon(float x, float y) : CGameObject()
 {
@@ -72,7 +74,7 @@ void CSimon::Load(LPCWSTR filePath) {
 
 	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
 	LPANIMATION_SET ani_set = animation_sets->Get(1);
-	LPANIMATION_SET whip_ani_set = animation_sets->Get(2);
+	LPANIMATION_SET whip_ani_set = animation_sets->Get(21);
 	this->SetAnimationSet(ani_set);
 	whip = new CWhip(0, 0);
 	whip->SetAnimationSet(whip_ani_set);
@@ -86,15 +88,62 @@ void CSimon::Load(LPCWSTR filePath) {
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	whip->Update(dt, coObjects);
 	CGameObject::Update(dt);
 	vy += SIMON_GRAVITY*dt;
-	
-	//TODO: Xử lý va chạm tại đây
-	if(state == SIMON_STATE_STANDING_HITTING) whip->Update(dt, coObjects);
 
-	x += dx; 
-	y += dy;
-	if (y > 130) y = 130;
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+
+	CalcPotentialCollisions(coObjects, coEvents);
+
+	if (coEvents.size()==0)
+	{
+		x += dx; 
+		y += dy;
+
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
+		float rdx = 0; 
+		float rdy = 0;
+
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+
+		x += min_tx*dx + nx*0.4f;
+		y += min_ty*dy + ny*0.4f;
+
+		if (nx!=0) vx = 0;
+		if (ny!=0) vy = 0;
+
+
+
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+
+			if (dynamic_cast<CWheapon*>(e->obj))
+			{
+				CWheapon* wheapon = dynamic_cast<CWheapon*>(e->obj);
+				wheapon->SetVisible(false);
+				whip->UpgradeLevel();
+			}
+
+			if (dynamic_cast<CTourchFlame*>(e->obj)) {
+				x += dx; 
+				y += dy;
+			}
+
+			if (dynamic_cast<CHeart*>(e->obj)) {
+				CHeart* heart = dynamic_cast<CHeart*>(e->obj);
+				heart->SetVisible(false);
+			}
+		}
+	}
+
 	
 }
 
@@ -125,7 +174,6 @@ void CSimon::Render()
 		else ani = SIMON_ANI_IDLE_LEFT;
 	}
 
-	//TODO: this is dry way. Try make a seperated function.
 	animation_set->at(ani)->Render(x, y, alpha);
 	if(isHitting) UseWhip(animation_set->at(ani)->GetCurrentFrame());
 

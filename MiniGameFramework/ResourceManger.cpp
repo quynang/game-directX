@@ -3,6 +3,7 @@
 #include <fstream>
 #include "GameObject.h"
 #include "TourchFlame.h"
+#include "Brick.h"
 
 CResourceManager* CResourceManager::__instance = NULL;
 CResourceManager* CResourceManager::GetInstance()
@@ -92,7 +93,7 @@ void CResourceManager::_ParseSection_ANIMATION_SETS(string line)
 
 	CAnimationSets::GetInstance()->Add(ani_set_id, s);
 
-	DebugOut(L"Done add animation test \n", ani_set_id);
+	DebugOut(L"Done add animation %d \n", ani_set_id);
 }
 
 
@@ -113,12 +114,18 @@ void CResourceManager::_ParseSection_OBJECTS(string line, vector<LPGAMEOBJECT> &
 	float x = atof(tokens[1].c_str());
 	float y = atof(tokens[2].c_str());
 	int ani_set_id = atoi(tokens[3].c_str());
+	int item_type = atoi(tokens[4].c_str());
+
 	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 	CGameObject* obj = NULL;
 	switch (object_type)
 	{
 	case 0:
 		obj = new CTourchFlame();
+		break;
+	case 1: 
+		obj = new CBrick();
+		break;
 	break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
@@ -128,8 +135,8 @@ void CResourceManager::_ParseSection_OBJECTS(string line, vector<LPGAMEOBJECT> &
 	obj->SetPosition(x, y);
 
 	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-
 	obj->SetAnimationSet(ani_set);
+	obj->SetItemType(item_type);
 	objects.push_back(obj);
 
 }

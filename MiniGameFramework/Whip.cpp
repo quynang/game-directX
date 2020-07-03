@@ -26,15 +26,12 @@ void CWhip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		this->CheckColliding(coObjects, collidingObjects);
 		for (UINT i = 0; i < collidingObjects.size(); i++) {
 			if (dynamic_cast<CTourchFlame*>(collidingObjects.at(i))) {
-				CTourchFlame *goomba = dynamic_cast<CTourchFlame *>(collidingObjects.at(i));
-				goomba->SetVisible(false);
-			}
-				
-		}
+				CTourchFlame *tourchFlame = dynamic_cast<CTourchFlame *>(collidingObjects.at(i));
+				tourchFlame->SetState(TOURCH_FLAME_STATE_DESTROY);
 	
-		
+			}
+		}
 	}
-
 }
 
 
@@ -42,7 +39,6 @@ void CWhip::Render()
 {
 	int ani = -1;
 	int alpha = 255;
-
 
 	switch (state) {
 	case WEAPON_STATE_SETUP_1:
@@ -53,6 +49,7 @@ void CWhip::Render()
 		break;
 	case WEAPON_STATE_CRACK:
 		ani = aniCrackByCurrentLevel();
+		RenderBoundingBox();
 		break;
 	}
 
@@ -66,11 +63,32 @@ void CWhip::SetState(int state)
 	CGameObject::SetState(state);
 }
 
+void CWhip::UpgradeLevel() {
+	if (level != WEAPON_LV3)
+		level += 1;
+}
+
 
 void CWhip::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	left = x;
-	top = y;
-	right = x + 24;
-	bottom = y + 8;
+	if (state == WEAPON_STATE_CRACK) {
+		left = x;
+		top = y;
+		switch (level) {
+		case WEAPON_LV1:
+			right = x + WHIP_LV1_BOX_WIDTH;
+			bottom = y + WHIP_LV1_BOX_HEIGHT;
+			break;
+		case WEAPON_LV2:
+			right = x + WHIP_LV2_BOX_WIDTH;
+			bottom = y + WHIP_LV2_BOX_HEIGHT;
+			break;
+		case WEAPON_LV3:
+			right = x + WHIP_LV3_BOX_WIDTH;
+			bottom = y + WHIP_LV3_BOX_HEIGHT;
+			break;
+		}
+	}
+	
 }
+

@@ -61,6 +61,7 @@ public:
 	DWORD dt; 
 
 	LPANIMATION_SET animation_set;
+	int item_type;
 
 public: 
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
@@ -73,6 +74,7 @@ public:
 	void RenderBoundingBox();
 
 	void SetAnimationSet(LPANIMATION_SET ani_set) { animation_set = ani_set; }
+	void SetItemType(int type) { item_type = type; }
 	 
 	void CheckColliding(vector<LPGAMEOBJECT> *coObjects, vector<LPGAMEOBJECT> &collidingObjects);
 
