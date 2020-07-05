@@ -22,9 +22,10 @@
 #define SIMON_ANI_STANDING_HITTING_RIGHT 7
 #define SIMON_ANI_COLOR_LEFT	8
 #define SIMON_ANI_COLOR_RIGHT	9
-
 #define SIMON_FREEZE_TIME	1000
 
+#define SIMON_BOX_WIDTH	16
+#define SIMON_BOX_HEIGHT	30
 
 class CSimon : public CGameObject
 {
@@ -38,6 +39,7 @@ class CSimon : public CGameObject
 	bool isFreeze = false;
 	CWhip* whip;
 	DWORD freezeTimer = 0;
+	D3DXVECTOR2 handPosition;
 	void UseWhip(int currentFrame);
 
 public: 

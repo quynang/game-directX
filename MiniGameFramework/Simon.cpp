@@ -159,7 +159,7 @@ void CSimon::Render()
 {
 	int ani = -1;
 	int alpha = 255;
-		
+
 	switch (state) {
 	case SIMON_STATE_WALKING_RIGHT:
 		ani = SIMON_ANI_WALK_RIGHT;
@@ -213,17 +213,17 @@ void CSimon::UseWhip(int currentFrame) {
 		case 0:
 			if(nx > 0) whip->SetPosition(this->x - 15, this->y + 6);
 			else whip->SetPosition(this->x + 24, this->y + 6);
-			whip->SetState(WEAPON_STATE_SETUP_1);
+			whip->SetState(WHIP_STATE_SETUP_1);
 			break;
 		case 1:
 			if (nx > 0) whip->SetPosition(this->x - 16, this->y + 6);
 			else whip->SetPosition(this->x + 16, this->y + 5);
-			whip->SetState(WEAPON_STATE_SETUP_2);
+			whip->SetState(WHIP_STATE_SETUP_2);
 			break;
-		case 2: 
+		case 2:
 			if (nx > 0) whip->SetPosition(this->x + 20, this->y + 6);
 			else whip->SetPosition(this->x - 30, this->y + 6);
-			whip->SetState(WEAPON_STATE_CRACK);
+			whip->SetState(WHIP_STATE_CRACK);
 			//whip->RenderBoundingBox();
 			break;
 	};
@@ -268,8 +268,8 @@ void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom
 {
 	left = x;
 	top = y;
-	right = x + 16;
-	bottom = y + 30;
+	right = x + SIMON_BOX_WIDTH;
+	bottom = y + SIMON_BOX_HEIGHT;
 }
 
 
