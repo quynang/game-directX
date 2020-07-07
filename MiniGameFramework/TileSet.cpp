@@ -10,6 +10,7 @@ CTileSet::CTileSet(int id, LPCWSTR filePath, int numRows, int numCols) {
 }
 
 CTileSet::~CTileSet() {
+
 }
 
 void CTileSet::loadTileSetIntoResources() {

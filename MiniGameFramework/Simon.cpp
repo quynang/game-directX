@@ -11,6 +11,8 @@
 #include "Portal.h"
 #include "Item.h"
 #include "TourchFlame.h"
+#include "PlayScence.h"
+#include"Brick.h"
 
 CSimon::CSimon(float x, float y) : CGameObject()
 {
@@ -90,8 +92,13 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	whip->Update(dt, coObjects);
 	CGameObject::Update(dt);
-	vy += SIMON_GRAVITY*dt;
+	if(!isClimbing)
+		vy += SIMON_GRAVITY*dt;
+	if(state == SIMON_STATE_JUMP)
+		DebugOut(L"[INFO] Update \n");
 
+
+	
 	if (isFreeze && (GetTickCount() - freezeTimer > SIMON_FREEZE_TIME)) 
 	{
 		freezeTimer = 0;
@@ -139,15 +146,17 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				SetState(SIMON_STATE_FREEZE);
 				StartFreezeState();
 			}
+			
 
 			if (dynamic_cast<CTourchFlame*>(e->obj)) {
 				x += dx; 
-				y += dy;
+				//y += dy;
 			}
-
+	
 			if (dynamic_cast<CHeart*>(e->obj)) {
 				CHeart* heart = dynamic_cast<CHeart*>(e->obj);
 				heart->SetVisible(false);
+				//((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->TurnOffGameUpdationByTimer(3000);
 			}
 		}
 	}
@@ -159,19 +168,24 @@ void CSimon::Render()
 {
 	int ani = -1;
 	int alpha = 255;
+	if(state == SIMON_STATE_JUMP)
+		DebugOut(L"[INFO] Render \n");
 
 	switch (state) {
-	case SIMON_STATE_WALKING_RIGHT:
-		ani = SIMON_ANI_WALK_RIGHT;
-		break;
-	case SIMON_STATE_WALKING_LEFT:
-		ani = SIMON_ANI_WALK_LEFT;
-		break;
 	case SIMON_STATE_JUMP:
 		if (nx > 0) ani = SIMON_ANI_JUMP_RIGHT;
 		else ani = SIMON_ANI_JUMP_LEFT;
 		isJumping = true;
 		break;
+	case SIMON_STATE_WALKING_RIGHT:
+		if(isJumping) ani = SIMON_ANI_JUMP_RIGHT;
+		else ani = SIMON_ANI_WALK_RIGHT;
+		break;
+	case SIMON_STATE_WALKING_LEFT:
+		if(isJumping) ani = SIMON_ANI_JUMP_LEFT;
+		else ani = SIMON_ANI_WALK_LEFT;
+		break;
+	
 	case SIMON_STATE_STANDING_HITTING: 
 		if (nx > 0) ani = SIMON_ANI_STANDING_HITTING_RIGHT; 
 		else ani = SIMON_ANI_STANDING_HITTING_LEFT;
@@ -180,6 +194,16 @@ void CSimon::Render()
 	case SIMON_STATE_FREEZE:
 		if (nx > 0) ani = SIMON_ANI_COLOR_RIGHT; 
 		else ani = SIMON_ANI_COLOR_LEFT;
+		break;
+	case SIMON_STATE_CLIMBING_UP:
+		if (nx > 0) ani = SIMON_ANI_CLIMBING_UP_RIGHT; 
+		else ani = SIMON_ANI_CLIMBING_UP_LEFT;
+		isClimbing = true;
+		break;
+	case SIMON_STATE_CLIMBING_DOWN:
+		if (nx > 0) ani = SIMON_ANI_CLIMBING_DOWN_LEFT; 
+		else ani = SIMON_ANI_CLIMBING_DOWN_RIGHT;
+		isClimbing = true;
 		break;
 	default:
 		if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
@@ -191,13 +215,15 @@ void CSimon::Render()
 	if(isHitting) UseWhip(animation_set->at(ani)->GetCurrentFrame());
 
 	if (isHitting == true && animation_set->at(ani)->isLastFrame()) isHitting = false;
-	if (isJumping == true && animation_set->at(ani)->isLastFrame()) isJumping = false;
 	
-
+	
+	if (vy > 0) isJumping = false;
 	
 	if (isHitting == false || isJumping == false) {
 		SetState(SIMON_STATE_IDLE);
 	}
+
+	
 
 	//RenderBoundingBox();
 }
@@ -248,12 +274,21 @@ void CSimon::SetState(int state)
 			break;
 		case SIMON_STATE_IDLE:
 			vx = 0;
+			vy = 0;
 			break;
 		case SIMON_STATE_JUMP:
 			vy = -SIMON_JUMP_SPEED_Y;
 			break;
 		case SIMON_STATE_STANDING_HITTING:
 			vx = 0;
+			break;
+		case SIMON_STATE_CLIMBING_UP:
+			vx = SIMON_WALKING_SPEED;
+			vy = -0.08f;
+			break;
+		case SIMON_STATE_CLIMBING_DOWN:
+			vx = -SIMON_WALKING_SPEED;
+			vy = 0.08f;
 			break;
 		case SIMON_STATE_FREEZE:
 			vx = 0;

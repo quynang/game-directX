@@ -14,14 +14,11 @@ protected:
 	CSimon* player;				// A play scene has to have player, right? 
 
 	vector<LPGAMEOBJECT> objects;
-
-	//void _ParseSection_TEXTURES(string line);
-	//void _ParseSection_SPRITES(string line);
-	//void _ParseSection_ANIMATIONS(string line);
-	//void _ParseSection_ANIMATION_SETS(string line);
 	void _ParseSection_OBJECTS();
 	void _ParseSection_MAP(string line);
 	void _ParseSection_PLAYER(string line);
+	bool offUpdation = false;
+	DWORD timerFlag = 0;
 
 public:
 	CPlayScene(int id, LPCWSTR filePath);
@@ -31,6 +28,7 @@ public:
 	virtual void Render();
 	virtual void Unload();
 	virtual void AddObject(LPGAMEOBJECT object);
+	void TurnOffGameUpdationByTimer(DWORD timer);
 
 	CSimon* GetPlayer() { return player; }
 

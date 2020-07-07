@@ -27,10 +27,6 @@ resources/simon.txt	50.0	110	1
 [OBJECTS]
 # type	x	y	ani_set_id	item_type
 # 0: TourchFlame, 1: brick lv0
-# Tourch flame
-0	237	130	101	1
-0	400	130	101	2
-0	600	130	101	2
 #---- Brick----
 1	0	160	102	-1
 1	32	160	102	-1
@@ -55,6 +51,11 @@ resources/simon.txt	50.0	110	1
 1	640	160	102	-1
 1	672	160	102	-1
 1	704	160	102	-1
+
+# Tourch flame
+0	237	129	101	1
+0	400	129	101	2
+0	600	129	101	2
 
 
 
