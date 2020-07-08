@@ -131,7 +131,7 @@ void CPlayScene::Update(DWORD dt)
 		cx -= game->GetScreenWidth() / 2;
 		cy -= game->GetScreenHeight() / 2;
 		if (cx < 0) cx = 0;
-		if (cx > 500) cx = 500;
+		if (cx > 0) cx = 0;
 		CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
 		vector<LPGAMEOBJECT> coObjects;
 		for (size_t i = 1; i < objects.size(); i++)
@@ -209,11 +209,15 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		break;
 	case DIK_LEFT:
 		simon->SetState(SIMON_STATE_IDLE);
+		break;
 	case DIK_UP:
-		simon->SetState(SIMON_STATE_IDLE);
+		if(simon->checkIsClimbing())
+			simon->SetState(SIMON_STATE_IDLE_ON_STAIR_UP);
+		break;
+	case DIK_DOWN:
+		simon->SetState(SIMON_STATE_IDLE_ON_STAIR_DOWN);
+		break;
 	}
-
-
 }
 void CPlayScenceKeyHandler::KeyState(BYTE* states)
 {
@@ -223,13 +227,23 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 		simon->SetState(SIMON_STATE_STANDING_HITTING);
 	}
 	if (game->IsKeyDown(DIK_RIGHT)) {
-		simon->SetState(SIMON_STATE_WALKING_RIGHT);
+		if (simon->checkIsClimbing()) {
+			simon->SetState(SIMON_STATE_CLIMBING_UP);
+		}
+		else {
+			simon->SetState(SIMON_STATE_WALKING_RIGHT);
+		}
 	}
 	if (game->IsKeyDown(DIK_LEFT))
 		simon->SetState(SIMON_STATE_WALKING_LEFT);
 	if (game->IsKeyDown(DIK_UP))
-		simon->SetState(SIMON_STATE_CLIMBING_UP);
+		if (simon->checkCanClimb()) {
+			simon->setIsClimbing(1);
+			simon->SetState(SIMON_STATE_CLIMBING_UP);
+		}
+			
 	if (game->IsKeyDown(DIK_DOWN))
-		simon->SetState(SIMON_STATE_CLIMBING_DOWN);
+		if(simon->checkCanClimb())
+			simon->SetState(SIMON_STATE_CLIMBING_DOWN);
 
 }

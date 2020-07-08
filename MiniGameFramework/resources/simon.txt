@@ -58,6 +58,14 @@
 #Climbing down right
 10041	1371	22	1387	53	0	0	0
 10042	1358	21	1370	52	0	0	0
+#idle on stair up left
+10043	154	22	169	53	0	0	0
+#idle on stair up right
+10044	1429	22	1444	53	0	0	0
+#idle on stair down left
+10045	211	22	227	53	0	0	0
+#idle on stair down right
+10046	1371	22	1387	53	0	0	0
  
 # ===== WHIP ======= 2xxxx
 
@@ -122,7 +130,6 @@
 
 [ANIMATIONS]
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
-
 # ==== SIMON ========= 1xx
 #idle right
 100	10001	100
@@ -150,9 +157,16 @@
 111	10037	100	10038	100
 #climbing down left
 112	10039	100	10040	100
-#climbing donw right
+#climbing down right
 113	10041	100	10042	100
-
+#idle on stair up left
+114	10043	100
+#idle on stair up right
+115	10044	100
+#idle on stair down left
+116	10045	100
+#idle on stair down right
+117	10046	100 
 #==========WHIP========== 2xx
 #lv1
 201	20001	100
@@ -188,7 +202,7 @@
 [ANIMATION_SETS]
 # id	ani1	ani2	ani3
 #====SIMON===== 1x
-1	100	101	102	103	104	105	106	107	108	109	110	111	112	113
+1	100	101	102	103	104	105	106	107	108	109	110	111	112	113	114	115	116	117
 #====WHIP==== 2x
 21	201	202	203	204	205	206	207	208	209	210	211	212	213	214	215	216	217	218
 #===HIT EFFECT 3x==== 3x

@@ -102,7 +102,7 @@ void CMap::Render() {
     int screenHeight = CGame::GetInstance()->GetScreenHeight();
     CGame::GetInstance()->GetCamPos(_cx, _cy);
 
-    DebugOut(L"[INFO] numCols: %d, numRows: %d\n", numCols, numRows);
+   // DebugOut(L"[INFO] numCols: %d, numRows: %d\n", numCols, numRows);
     
     int cellStartX = _cx / FRAME_SIZE;
     int cellStartY = _cy / FRAME_SIZE;

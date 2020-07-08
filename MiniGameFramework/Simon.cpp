@@ -13,6 +13,8 @@
 #include "TourchFlame.h"
 #include "PlayScence.h"
 #include"Brick.h"
+#include "StairBottom.h"
+#include "StairTop.h"
 
 CSimon::CSimon(float x, float y) : CGameObject()
 {
@@ -31,62 +33,6 @@ CSimon::CSimon(float x, float y) : CGameObject()
 #define PLAYER_SECTION_ANIMATIONS 4
 #define PLAYER_SECTION_ANIMATION_SETS	5
 #define MAX_PLAYER_LINE 1024
-void CSimon::Load(LPCWSTR filePath) {
-	DebugOut(L"[INFO] Start loading scene resources from : %s \n", filePath);
-
-	ifstream f;
-	f.open(filePath);
-
-	// current resource section flag
-	int section = PLAYER_SECTION_UNKNOWN;
-
-	char str[MAX_PLAYER_LINE];
-	while (f.getline(str, MAX_PLAYER_LINE))
-	{
-		string line(str);
-
-		if (line[0] == '#') continue;	// skip comment lines	
-
-		if (line == "[TEXTURES]") { section = PLAYER_SECTION_TEXTURES; continue; }
-		if (line == "[SPRITES]") {
-			section = PLAYER_SECTION_SPRITES; continue;
-		}
-		if (line == "[ANIMATIONS]") {
-			section = PLAYER_SECTION_ANIMATIONS; continue;
-		}
-		if (line == "[ANIMATION_SETS]") {
-			section = PLAYER_SECTION_ANIMATION_SETS; continue;
-		}
-
-		if (line[0] == '[') { section = PLAYER_SECTION_UNKNOWN; continue; }
-
-		//
-		// data section
-		//
-		switch (section)
-		{
-			case PLAYER_SECTION_TEXTURES: CResourceManager::GetInstance()->_ParseSection_TEXTURES(line); break;
-			case PLAYER_SECTION_SPRITES: CResourceManager::GetInstance()->_ParseSection_SPRITES(line); break;
-			case PLAYER_SECTION_ANIMATIONS: CResourceManager::GetInstance()->_ParseSection_ANIMATIONS(line); break;
-			case PLAYER_SECTION_ANIMATION_SETS: CResourceManager::GetInstance()->_ParseSection_ANIMATION_SETS(line); break;
-		}
-	}
-
-	f.close();
-
-	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
-	LPANIMATION_SET ani_set = animation_sets->Get(1);
-	LPANIMATION_SET whip_ani_set = animation_sets->Get(21);
-	this->SetAnimationSet(ani_set);
-	whip = new CWhip(0, 0);
-	whip->SetAnimationSet(whip_ani_set);
-	//DebugOut(L"[INFO] whip animation sets %d\n", whip_ani_set->size());
-
-	DebugOut(L"[INFO] Done loading scene resources %s\n", filePath);
-
-}
-
-
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -94,20 +40,31 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 	if(!isClimbing)
 		vy += SIMON_GRAVITY*dt;
-	if(state == SIMON_STATE_JUMP)
-		DebugOut(L"[INFO] Update \n");
 
-
-	
+	//DebugOut(L"[INFO] vy : %f \n", vy);
 	if (isFreeze && (GetTickCount() - freezeTimer > SIMON_FREEZE_TIME)) 
 	{
 		freezeTimer = 0;
 		isFreeze = false;
-		SetState(SIMON_STATE_IDLE);
+		//SetState(SIMON_STATE_IDLE);
 	}
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
+	vector<LPGAMEOBJECT> collidingObjects;
+	this->CheckColliding(coObjects, collidingObjects);
+	if (collidingObjects.size() == 0 && !isClimbing) {
+		canClimb = false;
+	}	else {
+		for (UINT i = 0; i < collidingObjects.size(); i++) {
+			if (dynamic_cast<CStairBottom*>(collidingObjects.at(i))) {
+				canClimb = true;
+				CStairBottom* stairBottom = dynamic_cast<CStairBottom*>(collidingObjects.at(i));;
+				nx_stair = stairBottom->GetDirection();
+			}
+		}
+
+	}
 
 	coEvents.clear();
 
@@ -146,11 +103,35 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				SetState(SIMON_STATE_FREEZE);
 				StartFreezeState();
 			}
-			
 
 			if (dynamic_cast<CTourchFlame*>(e->obj)) {
-				x += dx; 
-				//y += dy;
+				x += dx;
+				if (e->ny < 0) {
+					y += dy;
+				}
+			}
+
+			if (dynamic_cast<CStairBottom*>(e->obj)) {
+				CStairBottom* stairBottom = dynamic_cast<CStairBottom*>(e->obj);
+				x += dx;
+				if (e->ny < 0) {
+					y += dy;
+					isClimbing = false;
+					nx = -stairBottom->GetDirection();
+				}
+			}
+
+			if (dynamic_cast<CStairTop*>(e->obj)) {
+				x += dx;
+				CStairTop* stairTop = dynamic_cast<CStairTop*>(e->obj);
+				
+				if (e->nx < 0 && isClimbing ) {
+					this->SetPosition(stairTop->getPosition().x, stairTop->getPosition().y - SIMON_BOX_HEIGHT - 0.04f);
+				}
+				isClimbing = false;
+				canClimb = false;
+				
+				
 			}
 	
 			if (dynamic_cast<CHeart*>(e->obj)) {
@@ -168,49 +149,51 @@ void CSimon::Render()
 {
 	int ani = -1;
 	int alpha = 255;
-	if(state == SIMON_STATE_JUMP)
-		DebugOut(L"[INFO] Render \n");
 
 	switch (state) {
-	case SIMON_STATE_JUMP:
-		if (nx > 0) ani = SIMON_ANI_JUMP_RIGHT;
-		else ani = SIMON_ANI_JUMP_LEFT;
-		isJumping = true;
-		break;
-	case SIMON_STATE_WALKING_RIGHT:
-		if(isJumping) ani = SIMON_ANI_JUMP_RIGHT;
-		else ani = SIMON_ANI_WALK_RIGHT;
-		break;
-	case SIMON_STATE_WALKING_LEFT:
-		if(isJumping) ani = SIMON_ANI_JUMP_LEFT;
-		else ani = SIMON_ANI_WALK_LEFT;
-		break;
-	
-	case SIMON_STATE_STANDING_HITTING: 
-		if (nx > 0) ani = SIMON_ANI_STANDING_HITTING_RIGHT; 
-		else ani = SIMON_ANI_STANDING_HITTING_LEFT;
-		isHitting = true;
-		break;
-	case SIMON_STATE_FREEZE:
-		if (nx > 0) ani = SIMON_ANI_COLOR_RIGHT; 
-		else ani = SIMON_ANI_COLOR_LEFT;
-		break;
-	case SIMON_STATE_CLIMBING_UP:
-		if (nx > 0) ani = SIMON_ANI_CLIMBING_UP_RIGHT; 
-		else ani = SIMON_ANI_CLIMBING_UP_LEFT;
-		isClimbing = true;
-		break;
-	case SIMON_STATE_CLIMBING_DOWN:
-		if (nx > 0) ani = SIMON_ANI_CLIMBING_DOWN_LEFT; 
-		else ani = SIMON_ANI_CLIMBING_DOWN_RIGHT;
-		isClimbing = true;
-		break;
-	default:
-		if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
-		else ani = SIMON_ANI_IDLE_LEFT;
-	}
+		case SIMON_STATE_JUMP:
+			if (nx > 0) ani = SIMON_ANI_JUMP_RIGHT;
+			else ani = SIMON_ANI_JUMP_LEFT;
+			isJumping = true;
+			break;
+		case SIMON_STATE_WALKING_RIGHT:
+			if(isJumping) ani = SIMON_ANI_JUMP_RIGHT;
+			else ani = SIMON_ANI_WALK_RIGHT;
+			break;
+		case SIMON_STATE_WALKING_LEFT:
+			if(isJumping) ani = SIMON_ANI_JUMP_LEFT;
+			else ani = SIMON_ANI_WALK_LEFT;
+			break;
+		case SIMON_STATE_STANDING_HITTING:
+			if (nx > 0) ani = SIMON_ANI_STANDING_HITTING_RIGHT;
+			else ani = SIMON_ANI_STANDING_HITTING_LEFT;
+			isHitting = true;
+			break;
+		case SIMON_STATE_FREEZE:
+			if (nx > 0) ani = SIMON_ANI_COLOR_RIGHT;
+			else ani = SIMON_ANI_COLOR_LEFT;
+			break;
+		case SIMON_STATE_CLIMBING_UP:
+			if (nx_stair > 0) ani = SIMON_ANI_CLIMBING_UP_RIGHT;
+			else ani = SIMON_ANI_CLIMBING_UP_LEFT;
+			break;
+		case SIMON_STATE_CLIMBING_DOWN:
+			if (nx_stair > 0) ani = SIMON_ANI_CLIMBING_DOWN_LEFT;
+			else ani = SIMON_ANI_CLIMBING_DOWN_RIGHT;
+		 	break;
+		case SIMON_STATE_IDLE_ON_STAIR_UP:
+		 	if (nx_stair > 0) ani = SIMON_ANI_IDLE_ON_STAIR_UP_RIGHT;
+		 	else ani = SIMON_ANI_IDLE_ON_STAIR_UP_LEFT;
+		 	break;
+		case SIMON_STATE_IDLE_ON_STAIR_DOWN:
+		 	if (nx_stair < 0) ani = SIMON_ANI_IDLE_ON_STAIR_DOWN_RIGHT;
+		 	else ani = SIMON_ANI_IDLE_ON_STAIR_DOWN_LEFT;
+			break;
+		default:
+			if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
+			else ani = SIMON_ANI_IDLE_LEFT;
+	};
 
-	
 	animation_set->at(ani)->Render(x, y, alpha);
 	if(isHitting) UseWhip(animation_set->at(ani)->GetCurrentFrame());
 
@@ -219,13 +202,11 @@ void CSimon::Render()
 	
 	if (vy > 0) isJumping = false;
 	
-	if (isHitting == false || isJumping == false) {
-		SetState(SIMON_STATE_IDLE);
-	}
+	 if ((isHitting == false || isJumping == false) && !isClimbing) {
+	 	SetState(SIMON_STATE_IDLE);
+	 }
 
-	
-
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CSimon::StartFreezeState() {
@@ -274,7 +255,6 @@ void CSimon::SetState(int state)
 			break;
 		case SIMON_STATE_IDLE:
 			vx = 0;
-			vy = 0;
 			break;
 		case SIMON_STATE_JUMP:
 			vy = -SIMON_JUMP_SPEED_Y;
@@ -284,11 +264,18 @@ void CSimon::SetState(int state)
 			break;
 		case SIMON_STATE_CLIMBING_UP:
 			vx = SIMON_WALKING_SPEED;
-			vy = -0.08f;
+			vy = -0.07f;
 			break;
 		case SIMON_STATE_CLIMBING_DOWN:
 			vx = -SIMON_WALKING_SPEED;
-			vy = 0.08f;
+			vy = 0.07f;
+			break;
+		case SIMON_STATE_IDLE_ON_STAIR_UP:
+			vx = 0;
+			vy = 0;
+		case SIMON_STATE_IDLE_ON_STAIR_DOWN:
+			vx = 0;
+			vy = 0;
 			break;
 		case SIMON_STATE_FREEZE:
 			vx = 0;
@@ -318,3 +305,55 @@ void CSimon::Reset()
 	SetSpeed(0, 0);
 }
 
+
+void CSimon::Load(LPCWSTR filePath) {
+	DebugOut(L"[INFO] Start loading scene resources from : %s \n", filePath);
+
+	ifstream f;
+	f.open(filePath);
+
+	// current resource section flag
+	int section = PLAYER_SECTION_UNKNOWN;
+
+	char str[MAX_PLAYER_LINE];
+	while (f.getline(str, MAX_PLAYER_LINE))
+	{
+		string line(str);
+
+		if (line[0] == '#') continue;	// skip comment lines	
+
+		if (line == "[TEXTURES]") { section = PLAYER_SECTION_TEXTURES; continue; }
+		if (line == "[SPRITES]") {
+			section = PLAYER_SECTION_SPRITES; continue;
+		}
+		if (line == "[ANIMATIONS]") {
+			section = PLAYER_SECTION_ANIMATIONS; continue;
+		}
+		if (line == "[ANIMATION_SETS]") {
+			section = PLAYER_SECTION_ANIMATION_SETS; continue;
+		}
+
+		if (line[0] == '[') { section = PLAYER_SECTION_UNKNOWN; continue; }
+
+		switch (section)
+		{
+			case PLAYER_SECTION_TEXTURES: CResourceManager::GetInstance()->_ParseSection_TEXTURES(line); break;
+			case PLAYER_SECTION_SPRITES: CResourceManager::GetInstance()->_ParseSection_SPRITES(line); break;
+			case PLAYER_SECTION_ANIMATIONS: CResourceManager::GetInstance()->_ParseSection_ANIMATIONS(line); break;
+			case PLAYER_SECTION_ANIMATION_SETS: CResourceManager::GetInstance()->_ParseSection_ANIMATION_SETS(line); break;
+		}
+	}
+
+	f.close();
+
+	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
+	LPANIMATION_SET ani_set = animation_sets->Get(1);
+	LPANIMATION_SET whip_ani_set = animation_sets->Get(21);
+	this->SetAnimationSet(ani_set);
+	whip = new CWhip(0, 0);
+	whip->SetAnimationSet(whip_ani_set);
+	//DebugOut(L"[INFO] whip animation sets %d\n", whip_ani_set->size());
+
+	DebugOut(L"[INFO] Done loading scene resources %s\n", filePath);
+
+}
