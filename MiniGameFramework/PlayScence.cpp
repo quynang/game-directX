@@ -131,7 +131,9 @@ void CPlayScene::Update(DWORD dt)
 		cx -= game->GetScreenWidth() / 2;
 		cy -= game->GetScreenHeight() / 2;
 		if (cx < 0) cx = 0;
-		if (cx > 0) cx = 0;
+
+		//TODO: Make it more readable. Perhaps create a method check is camera reached bounder map then handle cx. 
+		if (cx > CMap::GetInstance()->getWidth() - game->GetScreenWidth()  ) cx = CMap::GetInstance()->getWidth() - game->GetScreenWidth();
 		CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
 		vector<LPGAMEOBJECT> coObjects;
 		for (size_t i = 1; i < objects.size(); i++)
