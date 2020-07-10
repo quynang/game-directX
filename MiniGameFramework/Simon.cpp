@@ -58,8 +58,10 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}	else {
 		for (UINT i = 0; i < collidingObjects.size(); i++) {
 			if (dynamic_cast<CStairBottom*>(collidingObjects.at(i))) {
+				CStairBottom* stairBottom = dynamic_cast<CStairBottom*>(collidingObjects.at(i));
+				if (isClimbing) x = stairBottom->getPosition().x;
 				canClimb = true;
-				CStairBottom* stairBottom = dynamic_cast<CStairBottom*>(collidingObjects.at(i));;
+
 				nx_stair = stairBottom->GetDirection();
 			}
 		}
@@ -137,6 +139,13 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CHeart*>(e->obj)) {
 				CHeart* heart = dynamic_cast<CHeart*>(e->obj);
 				heart->SetVisible(false);
+				//((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->TurnOffGameUpdationByTimer(3000);
+			}
+
+			if (dynamic_cast<CBrick*>(e->obj)) {
+				flag++;
+				DebugOut(L"[INFO] is colliding with Brick : %d \n", flag);
+
 				//((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->TurnOffGameUpdationByTimer(3000);
 			}
 		}
@@ -237,6 +246,7 @@ void CSimon::UseWhip(int currentFrame) {
 
 	whip->Render();
 }
+
 
 void CSimon::SetState(int state)
 {
