@@ -4,7 +4,7 @@ CStairBottom::CStairBottom(int stair_diretion) {
 }
 
 void CStairBottom::Render() {
-
+	RenderBoundingBox();
 }
 
 void CStairBottom::GetBoundingBox(float &left, float &top, float &right, float &bottom)

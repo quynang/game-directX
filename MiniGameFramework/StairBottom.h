@@ -1,8 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
-#define STAIR_BOTTOM_BOX_WIDTH	8
-#define STAIR_BOTTOM_BOX_HEIGHT	8
+#define STAIR_BOTTOM_BOX_WIDTH	15
+#define STAIR_BOTTOM_BOX_HEIGHT	4
 #define STAIR_DIRECTION_LEFT	1
 #define STAIR_DIRECTION_RIGHT	-1
 

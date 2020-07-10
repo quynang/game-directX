@@ -1,8 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
-#define STAIR_TOP_BOX_WIDTH	8
-#define STAIR_TOP_BOX_HEIGHT	8
+#define STAIR_TOP_BOX_WIDTH	16
+#define STAIR_TOP_BOX_HEIGHT	10
 
 class CStairTop : public CGameObject
 {

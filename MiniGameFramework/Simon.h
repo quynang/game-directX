@@ -52,7 +52,8 @@ class CSimon : public CGameObject
 	bool isJumping = false;
 	bool isFreeze = false;
 	bool isClimbing = false;
-	bool canClimb = false;
+	bool canClimbDown = false;
+	bool canClimbUp = false;
 	int nx_stair;
 	CWhip* whip;
 	DWORD freezeTimer = 0;
@@ -67,7 +68,8 @@ public:
 	virtual void Render();
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
-	bool checkCanClimb() { return canClimb;  }
+	bool checkCanClimbUp() { return canClimbUp;  }
+	bool checkCanClimbDown() { return canClimbDown;  }
 	bool checkIsClimbing() { return isClimbing;  }
 	void setIsClimbing(bool value) { isClimbing = value; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
