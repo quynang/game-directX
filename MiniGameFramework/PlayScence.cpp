@@ -208,10 +208,16 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_RIGHT:
-		simon->SetState(SIMON_STATE_IDLE);
+		if(simon->checkIsClimbing())
+			simon->SetState(SIMON_STATE_IDLE_ON_STAIR_UP);
+		else
+			simon->SetState(SIMON_STATE_IDLE);
 		break;
 	case DIK_LEFT:
-		simon->SetState(SIMON_STATE_IDLE);
+		if(simon->checkIsClimbing())
+			simon->SetState(SIMON_STATE_IDLE_ON_STAIR_DOWN);
+		else
+			simon->SetState(SIMON_STATE_IDLE);
 		break;
 	case DIK_UP:
 		if(simon->checkIsClimbing())

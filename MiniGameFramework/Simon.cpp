@@ -58,24 +58,49 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}	else {
 		for (UINT i = 0; i < objectsColliding.size(); i++) {
 			if (dynamic_cast<CStairBottom*>(objectsColliding.at(i))) {
-				canClimbUp = true;
+
 				CStairBottom* stairBottom = dynamic_cast<CStairBottom*>(objectsColliding.at(i));
-				if (isClimbing && canClimbUp && !canClimbDown) { x = stairBottom->getPosition().x + 4;} 
+				canClimbUp = true;
+
+				if (isClimbing && canClimbUp && !canClimbDown) { 
+					x = stairBottom->getPosition().x + 4;
+					canClimbDown = true;
+					y -= 4;
+				}
+
 				nx_stair = stairBottom->GetDirection();
 
 				bool isReachedBottomOfStair = stairBottom->getPosition().y - this->y < 28;
-				if (isClimbing && isReachedBottomOfStair && canClimbUp && canClimbDown) { y = stairBottom->getPosition().y - SIMON_BOX_HEIGHT ;  x = stairBottom->getPosition().x - 1; canClimbUp = false;  canClimbDown = false; isClimbing = false; }
+				if (isClimbing && isReachedBottomOfStair && canClimbUp && canClimbDown) { 
+					y = stairBottom->getPosition().y - SIMON_BOX_HEIGHT;
+					x = stairBottom->getPosition().x - 1;
+					canClimbUp = false;
+					canClimbDown = false;
+					isClimbing = false;
+				}
 			}
 
 			if (dynamic_cast<CStairTop*>(objectsColliding.at(i))) {
+
 				CStairTop* stairTop = dynamic_cast<CStairTop*>(objectsColliding.at(i));
 				bool isReachedTopOfStair = stairTop->getPosition().y - this->y > 20;
-				if (isClimbing && isReachedTopOfStair) { y = stairTop->getPosition().y - SIMON_BOX_HEIGHT + 10;  x = stairTop->getPosition().x + 1; canClimbUp = false; isClimbing = false;}
+
+				if (isClimbing && isReachedTopOfStair) { 
+					y = stairTop->getPosition().y - SIMON_BOX_HEIGHT + 10;
+					x = stairTop->getPosition().x + 1;
+					canClimbUp = false;
+					isClimbing = false;
+				}
+
 				canClimbDown = true;
 
+				if (isClimbing && canClimbDown && !canClimbUp) {
+					x = stairTop->getPosition().x + 1;
+					canClimbUp = true;
+					y = stairTop->getPosition().y + STAIR_TOP_BOX_HEIGHT - SIMON_BOX_HEIGHT + 1.4f;
+				}
 			}
 		}
-
 	}
 
 	//DebugOut(L"[INFO] Simon can climb down  : %d \n", canClimbDown);
@@ -130,7 +155,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CStairBottom* stairBottom = dynamic_cast<CStairBottom*>(e->obj);
 				x += dx;
 				if (e->ny < 0) {
-					y += dy;
+					y += STAIR_BOTTOM_BOX_HEIGHT;
 	
 				}
 			}
@@ -138,7 +163,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CStairTop*>(e->obj)) {
 				x += dx;
 				if (e->ny < 0) {
-					y += dy;
+					y += STAIR_TOP_BOX_HEIGHT;
 				}
 			}
 	
@@ -152,6 +177,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
 				if (e->ny > 0 || isClimbing) {
 					y += dy;
+					x += dx;
 				}
 				//((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->TurnOffGameUpdationByTimer(3000);
 			}
@@ -290,6 +316,7 @@ void CSimon::SetState(int state)
 		case SIMON_STATE_IDLE_ON_STAIR_UP:
 			vx = 0;
 			vy = 0;
+			break;
 		case SIMON_STATE_IDLE_ON_STAIR_DOWN:
 			vx = 0;
 			vy = 0;
