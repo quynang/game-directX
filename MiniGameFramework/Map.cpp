@@ -26,7 +26,7 @@ CMap* CMap::GetInstance()
 #define MAP_FILE_SECTION_MAP_MATRIX 2
 void CMap::Load(LPCWSTR gameFile) {
 
-    DebugOut(L"[INFO] Start loading game file : %s\n", gameFile);
+    DebugOut(L"[INFO] Start loading Map from file : %s\n", gameFile);
 
     ifstream f;
     f.open(gameFile);
@@ -49,6 +49,9 @@ void CMap::Load(LPCWSTR gameFile) {
         case MAP_FILE_SECTION_MAP_MATRIX: _ParseSection_MAP_MATRIX(line); break;
         }
     }
+
+    DebugOut(L"[INFO] Finished loading Map from file: %s\n", gameFile);
+
 }
 
 
@@ -60,6 +63,9 @@ void CMap::_ParseSection_MAP_MATRIX(string line) {
         row.push_back(value);
     }
     this->mapMatrix.push_back(row);
+
+    //DebugOut(L"[INFO] parse map matrix sucessfully : %s");
+
 }
 
 void CMap::_ParseSection_TILE_SET(string line) {
@@ -96,6 +102,7 @@ void CMap::Render() {
     int screenHeight = CGame::GetInstance()->GetScreenHeight();
     CGame::GetInstance()->GetCamPos(_cx, _cy);
 
+   // DebugOut(L"[INFO] numCols: %d, numRows: %d\n", numCols, numRows);
     
     int cellStartX = _cx / FRAME_SIZE;
     int cellStartY = _cy / FRAME_SIZE;
@@ -112,6 +119,17 @@ void CMap::Render() {
         }
 }
 
-void CMap::Update() {
-    
+void CMap::Clear() {
+    mTitleSet = NULL;
+    delete mTitleSet;
+
+   for (auto x : mapMatrix)
+	{
+       for (auto y : x)
+           y = NULL;
+        x.clear();
+	}
+
+   mapMatrix.clear();
+
 }

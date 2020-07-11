@@ -22,6 +22,7 @@ public:
 	void Update();
 	int valueAt(int i, int j);
 	static CMap* GetInstance();
+	void Clear();
 private:
 	void _ParseSection_TILE_SET(string line);
 	void _ParseSection_MAP_MATRIX(string line);

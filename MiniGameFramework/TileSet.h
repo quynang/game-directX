@@ -16,6 +16,7 @@ public:
 	~CTileSet();
 	void loadTileSetIntoResources();
 	vector<LPSPRITE> getSprites();
+	void Clear();
 private:
 	int id;
 	int numRows;

@@ -76,7 +76,7 @@ void CGameObject::CalcPotentialCollisions(
 			delete e;
 	}
 
-	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
+	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare); // Compare để xét thằng nào chạm trước. Static method nên dùng ::
 }
 
 void CGameObject::FilterCollision(

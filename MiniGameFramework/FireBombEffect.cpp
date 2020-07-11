@@ -8,7 +8,7 @@ void CFireBombEffect::Render() {
 	if (isVisible) {
 		if(timer == 0) timer = GetTickCount();
 		CAnimationSets::GetInstance()->Get(31)->at(1)->Render(x, y);
-		if (GetTickCount() - timer > 200) {
+		if (GetTickCount() - timer > 400) {
 			timer = 0;
 			isVisible = false;
 		}

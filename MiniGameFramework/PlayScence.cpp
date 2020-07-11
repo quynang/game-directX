@@ -115,30 +115,44 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
-	//TODO
-	float cx, cy;
-	player->GetPosition(cx, cy);
-
-	CGame* game = CGame::GetInstance();
-	cx -= game->GetScreenWidth() / 2;
-	cy -= game->GetScreenHeight() / 2;
-	if (cx < 0) cx = 0;
-	if (cx > 410) cx = 410;
-	CGame::GetInstance()->SetCamPos(cx, 10.0f /*cy*/);
-	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
-	{
-		coObjects.push_back(objects[i]);
+	if (offUpdation) {
+		if (GetTickCount() - timerFlag > 3000) {
+			offUpdation = false;
+			timerFlag = 0;
+		}
 	}
+
+
+	if (!offUpdation) {
+		float cx, cy;
+		player->GetPosition(cx, cy);
+
+		CGame* game = CGame::GetInstance();
+		cx -= game->GetScreenWidth() / 2;
+		cy -= game->GetScreenHeight() / 2;
+		if (cx < 0) cx = 0;
+
+		//TODO: Make it more readable. Perhaps create a method check is camera reached bounder map then handle cx. 
+		if (cx > CMap::GetInstance()->getWidth() - game->GetScreenWidth()  ) cx = CMap::GetInstance()->getWidth() - game->GetScreenWidth();
+		CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+		vector<LPGAMEOBJECT> coObjects;
+		for (size_t i = 1; i < objects.size(); i++)
+		{
+			coObjects.push_back(objects[i]);
+		}
 
 	
-	for (size_t i = 0; i < objects.size(); i++)
-	{
-		objects[i]->Update(dt, &coObjects);
+		for (size_t i = 0; i < objects.size(); i++)
+		{
+			objects[i]->Update(dt, &coObjects);
+		}
 	}
-
 }
 
+void CPlayScene::TurnOffGameUpdationByTimer(DWORD timer) {
+	offUpdation = true;
+	timerFlag = GetTickCount();
+}
 void CPlayScene::Render()
 {
 
@@ -173,13 +187,17 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-		simon->SetState(SIMON_STATE_JUMP);
+		if(!simon->checkIsClimbing())
+			simon->SetState(SIMON_STATE_JUMP);
 		break;
 	case DIK_A:
 		simon->Reset();
 		break;
 	case DIK_Z: 
 		simon->SetState(SIMON_STATE_STANDING_HITTING);
+		break;
+	case DIK_N: 
+		CGame::GetInstance()->SwitchScene(2);
 		break;
 	}
 }
@@ -190,25 +208,59 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_RIGHT:
-		simon->SetState(SIMON_STATE_IDLE);
+		if(simon->checkIsClimbing())
+			simon->SetState(SIMON_STATE_IDLE_ON_STAIR_UP);
+		else
+			simon->SetState(SIMON_STATE_IDLE);
 		break;
 	case DIK_LEFT:
-		simon->SetState(SIMON_STATE_IDLE);
+		if(simon->checkIsClimbing())
+			simon->SetState(SIMON_STATE_IDLE_ON_STAIR_DOWN);
+		else
+			simon->SetState(SIMON_STATE_IDLE);
+		break;
+	case DIK_UP:
+		if(simon->checkIsClimbing())
+			simon->SetState(SIMON_STATE_IDLE_ON_STAIR_UP);
+		break;
+	case DIK_DOWN:
+		if(simon->checkIsClimbing())
+			simon->SetState(SIMON_STATE_IDLE_ON_STAIR_DOWN);
+		break;
 	}
-
 }
 void CPlayScenceKeyHandler::KeyState(BYTE* states)
 {
 	CGame* game = CGame::GetInstance();
-	CMap* map = CMap::GetInstance();
 	CSimon* simon = ((CPlayScene*)scence)->GetPlayer();
 	if (game->IsKeyDown(DIK_Z)) {
 		simon->SetState(SIMON_STATE_STANDING_HITTING);
 	}
 	if (game->IsKeyDown(DIK_RIGHT)) {
-		simon->SetState(SIMON_STATE_WALKING_RIGHT);
+		if (simon->checkIsClimbing()) {
+			simon->SetState(SIMON_STATE_CLIMBING_UP);
+		}
+		else {
+			simon->SetState(SIMON_STATE_WALKING_RIGHT);
+		}
 	}
-	else if (game->IsKeyDown(DIK_LEFT))
-		simon->SetState(SIMON_STATE_WALKING_LEFT);
+	if (game->IsKeyDown(DIK_LEFT))
+		if (simon->checkIsClimbing()) {
+			simon->SetState(SIMON_STATE_CLIMBING_DOWN);
+		}
+		else {
+			simon->SetState(SIMON_STATE_WALKING_LEFT);
+		}
+	if (game->IsKeyDown(DIK_UP))
+		if (simon->checkCanClimbUp()) {
+			simon->SetState(SIMON_STATE_CLIMBING_UP);
+			simon->setIsClimbing(true);
+		}
+			
+	if (game->IsKeyDown(DIK_DOWN))
+		if (simon->checkCanClimbDown()) {
+			simon->setIsClimbing(true);
+			simon->SetState(SIMON_STATE_CLIMBING_DOWN);
+		}
 
 }
