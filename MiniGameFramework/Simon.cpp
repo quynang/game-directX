@@ -231,11 +231,16 @@ void CSimon::Render()
 		 	if (nx_stair < 0) ani = SIMON_ANI_IDLE_ON_STAIR_DOWN_RIGHT;
 		 	else ani = SIMON_ANI_IDLE_ON_STAIR_DOWN_LEFT;
 			break;
+		case SIMON_STATE_DUCKING:
+			if (nx > 0) ani = SIMON_ANI_DUCKING_RIGHT;
+			else ani = SIMON_ANI_DUCKING_LEFT;
+			break;
 		default:
 			if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
 			else ani = SIMON_ANI_IDLE_LEFT;
 	};
 
+	DebugOut(L"[INFO] current Simon animation %d\n", ani);
 	animation_set->at(ani)->Render(x, y, alpha);
 	if(isHitting) UseWhip(animation_set->at(ani)->GetCurrentFrame());
 
@@ -283,7 +288,7 @@ void CSimon::UseWhip(int currentFrame) {
 
 void CSimon::SetState(int state)
 {
-	if (!isHitting && !isJumping && !isFreeze) {
+	if (!isHitting && !isJumping && !isFreeze && !isDucking) {
 		CGameObject::SetState(state);
 
 		switch (state)
@@ -308,10 +313,12 @@ void CSimon::SetState(int state)
 		case SIMON_STATE_CLIMBING_UP:
 			vx = SIMON_WALKING_SPEED;
 			vy = -0.07f;
+			nx = nx_stair;
 			break;
 		case SIMON_STATE_CLIMBING_DOWN:
 			vx = -SIMON_WALKING_SPEED;
 			vy = 0.07f;
+			nx = -nx_stair;
 			break;
 		case SIMON_STATE_IDLE_ON_STAIR_UP:
 			vx = 0;
@@ -320,6 +327,13 @@ void CSimon::SetState(int state)
 		case SIMON_STATE_IDLE_ON_STAIR_DOWN:
 			vx = 0;
 			vy = 0;
+			break;
+		case SIMON_STATE_DUCKING:
+			vx = 0;
+			vy = 0;
+			break;
+		case SIMON_STATE_HITTING_ON_STAIR:
+			vx = 0;
 			break;
 		case SIMON_STATE_FREEZE:
 			vx = 0;

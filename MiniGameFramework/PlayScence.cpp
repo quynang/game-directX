@@ -196,8 +196,16 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_Z: 
 		simon->SetState(SIMON_STATE_STANDING_HITTING);
 		break;
-	case DIK_N: 
+	case DIK_1: 
+		CGame::GetInstance()->SwitchScene(1);
+		break;
+	case DIK_2: 
 		CGame::GetInstance()->SwitchScene(2);
+		break;
+	case DIK_3: 
+		CGame::GetInstance()->SwitchScene(3);
+		simon->setIsClimbing(true);
+		//simon->SetState(SIMON_STATE_IDLE_ON_STAIR_UP);
 		break;
 	}
 }
@@ -226,6 +234,10 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	case DIK_DOWN:
 		if(simon->checkIsClimbing())
 			simon->SetState(SIMON_STATE_IDLE_ON_STAIR_DOWN);
+		else {
+			//simon->SetState(SIMON_STATE_IDLE);
+			simon->setIsDucking(false);
+		}
 		break;
 	}
 }
@@ -261,6 +273,12 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 		if (simon->checkCanClimbDown()) {
 			simon->setIsClimbing(true);
 			simon->SetState(SIMON_STATE_CLIMBING_DOWN);
+		}
+		else {
+			if (!simon->checkIsClimbing()) {
+				simon->SetState(SIMON_STATE_DUCKING);
+				simon->setIsDucking(true);
+			}
 		}
 
 }
