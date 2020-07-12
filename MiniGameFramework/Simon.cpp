@@ -263,20 +263,27 @@ void CSimon::StartFreezeState() {
 
 void CSimon::UseWhip(int currentFrame) {
 	whip->SetDirection(nx);
+	/*	Xét trạng thái của cây roi
+		Với trạng thái setup1 và setup2. Roi sẽ sau con Simon.
+		Với trạng thái crack . Roi sẽ ở trước Simon.
+		==> Do đó ta cần setPosition cho cây roi dựa vào 4 yếu tố. Box width của Simon, Box width của cây roi, trạng thái của cây roi, 
+			phương hiện tại Simon.
+		**Nhìn vào textures của Simon để thấy rõ hơn.
+	*/
 	switch(currentFrame) {
 		case 0:
-			if(nx > 0) whip->SetPosition(this->x - 15, this->y + 6);
-			else whip->SetPosition(this->x + 24, this->y + 6);
+			if(nx > 0) whip->SetPosition(this->x - whip->GetBoxWidthSetup1ByCurrentLevel(), this->y + SIMON_HAND_OFFSET_Y);
+			else whip->SetPosition(this->x + SIMON_BOX_WIDTH, this->y + SIMON_HAND_OFFSET_Y);
 			whip->SetState(WHIP_STATE_SETUP_1);
 			break;
 		case 1:
-			if (nx > 0) whip->SetPosition(this->x - 16, this->y + 6);
-			else whip->SetPosition(this->x + 16, this->y + 5);
+			if (nx > 0) whip->SetPosition(this->x - whip->GetBoxWidthSetup2ByCurrentLevel(), this->y + SIMON_HAND_OFFSET_Y);
+			else whip->SetPosition(this->x + SIMON_BOX_WIDTH, this->y + SIMON_HAND_OFFSET_Y);
 			whip->SetState(WHIP_STATE_SETUP_2);
 			break;
 		case 2:
-			if (nx > 0) whip->SetPosition(this->x + 20, this->y + 6);
-			else whip->SetPosition(this->x - 30, this->y + 6);
+			if (nx > 0) whip->SetPosition(this->x + SIMON_BOX_WIDTH + SIMON_HAND_OFFSET_X, this->y + SIMON_HAND_OFFSET_Y);
+			else whip->SetPosition(this->x - whip->GetBoxWidthCrackByCurrentLevel() - SIMON_HAND_OFFSET_X, this->y + SIMON_HAND_OFFSET_Y);
 			whip->SetState(WHIP_STATE_CRACK);
 			//whip->RenderBoundingBox();
 			break;

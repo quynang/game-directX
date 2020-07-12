@@ -49,7 +49,7 @@ void CWhip::Render()
 		break;
 	case WHIP_STATE_CRACK:
 		ani = aniCrackByCurrentLevel();
-		//RenderBoundingBox();
+		RenderBoundingBox();
 		break;
 	}
 
@@ -74,20 +74,8 @@ void CWhip::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 	if (state == WHIP_STATE_CRACK) {
 		left = x;
 		top = y;
-		switch (level) {
-		case WHIP_LV1:
-			right = x + WHIP_LV1_BOX_WIDTH;
-			bottom = y + WHIP_LV1_BOX_HEIGHT;
-			break;
-		case WHIP_LV2:
-			right = x + WHIP_LV2_BOX_WIDTH;
-			bottom = y + WHIP_LV2_BOX_HEIGHT;
-			break;
-		case WHIP_LV3:
-			right = x + WHIP_LV3_BOX_WIDTH;
-			bottom = y + WHIP_LV3_BOX_HEIGHT;
-			break;
-		}
+		right = x + GetBoxWidthCrackByCurrentLevel();
+		bottom = top + 6;
 	}
 	
 }

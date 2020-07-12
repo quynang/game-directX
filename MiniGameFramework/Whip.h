@@ -33,14 +33,20 @@
 #define WHIP_LV3_ANI_SETUP_2_RIGHT	15
 #define WHIP_LV3_ANI_CRACK_RIGHT	17
 
-#define WHIP_LV1_BOX_WIDTH	24
-#define WHIP_LV1_BOX_HEIGHT	8
+#define WHIP_LV1_SETUP_1_BOX_WIDTH	8
+#define WHIP_LV1_SETUP_2_BOX_WIDTH	16
+#define WHIP_LV1_CRACK_BOX_WIDTH	24
+#define WHIP_LV1_CRACK_BOX_HEIGHT	8
 
-#define WHIP_LV2_BOX_WIDTH	24
-#define WHIP_LV2_BOX_HEIGHT	6
+#define WHIP_LV2_SETUP_1_BOX_WIDTH	8
+#define WHIP_LV2_SETUP_2_BOX_WIDTH	16
+#define WHIP_LV2_CRACK_BOX_WIDTH	24
+#define WHIP_LV2_CRACK_BOX_HEIGHT	6
 
-#define WHIP_LV3_BOX_WIDTH	40
-#define WHIP_LV3_BOX_HEIGHT	6
+#define WHIP_LV3_SETUP_1_BOX_WIDTH	8
+#define WHIP_LV3_SETUP_2_BOX_WIDTH	16
+#define WHIP_LV3_CRACK_BOX_WIDTH	40
+#define WHIP_LV3_CRACK_BOX_HEIGHT	6
 
 
 class CWhip : public CGameObject
@@ -57,7 +63,7 @@ class CWhip : public CGameObject
 			else return WHIP_LV2_ANI_SETUP_1_LEFT;
 		case WHIP_LV3:
 			if (nx > 0) return WHIP_LV3_ANI_SETUP_1_RIGHT;
-			else return WHIP_LV3_ANI_SETUP_1_RIGHT;
+			else return WHIP_LV3_ANI_SETUP_1_LEFT;
 		};
 	};
 
@@ -105,4 +111,37 @@ public:
 	void UpgradeLevel();
 
 	void SetState(int state);
+
+	int GetBoxWidthSetup1ByCurrentLevel() {
+		switch(level) {
+		case WHIP_LV1:
+			return WHIP_LV1_SETUP_1_BOX_WIDTH;
+		case WHIP_LV2:
+			return WHIP_LV2_SETUP_1_BOX_WIDTH;
+		case WHIP_LV3:
+			return WHIP_LV3_SETUP_1_BOX_WIDTH;
+		}
+	}
+
+	int GetBoxWidthSetup2ByCurrentLevel() {
+		switch(level) {
+		case WHIP_LV1:
+			return WHIP_LV1_SETUP_2_BOX_WIDTH;
+		case WHIP_LV2:
+			return WHIP_LV2_SETUP_2_BOX_WIDTH;
+		case WHIP_LV3:
+			return WHIP_LV3_SETUP_2_BOX_WIDTH;
+		}
+	}
+
+	int GetBoxWidthCrackByCurrentLevel() {
+		switch(level) {
+		case WHIP_LV1:
+			return WHIP_LV1_CRACK_BOX_WIDTH;
+		case WHIP_LV2:
+			return WHIP_LV2_CRACK_BOX_WIDTH;
+		case WHIP_LV3:
+			return WHIP_LV3_CRACK_BOX_WIDTH;
+		}
+	}
 };
