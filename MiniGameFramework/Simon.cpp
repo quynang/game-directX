@@ -41,6 +41,12 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if(!isClimbing)
 		vy += SIMON_GRAVITY*dt;
 
+	if ( GetTickCount() - start_jump > SIMON_JUMPING_TIME) 
+	{
+		start_jump = 0;
+		canJump = true;
+	}
+
 	if (isFreeze && (GetTickCount() - freezeTimer > SIMON_FREEZE_TIME)) 
 	{
 		freezeTimer = 0;
@@ -325,6 +331,8 @@ void CSimon::SetState(int state)
 			break;
 		case SIMON_STATE_JUMP:
 			vy = -SIMON_JUMP_SPEED_Y;
+			canJump = false;
+			this->StartJump();
 			break;
 		case SIMON_STATE_STANDING_HITTING:
 			vx = 0;

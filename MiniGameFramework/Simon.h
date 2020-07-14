@@ -47,6 +47,7 @@
 
 
 #define SIMON_FREEZE_TIME	1000
+#define SIMON_JUMPING_TIME	400
 
 #define SIMON_BOX_WIDTH	16
 #define SIMON_BOX_HEIGHT	30
@@ -67,6 +68,7 @@ class CSimon : public CGameObject
 	bool isDucking = false;
 	bool canJump = true;
 	int nx_stair = 1;
+	DWORD start_jump;
 	CWhip* whip;
 	DWORD freezeTimer = 0;
 	D3DXVECTOR2 handPosition;
@@ -85,9 +87,10 @@ public:
 	bool checkIsClimbing() { return isClimbing;  }
 	void setIsClimbing(bool value) { isClimbing = value; }
 	void setIsDucking(bool value) { isDucking = value; }
-	bool checkCanJump(bool value) { return canJump; }
+	bool checkCanJump() { return canJump; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	void Reset();
+	void StartJump() { start_jump = GetTickCount(); }
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void StartFreezeState();
 };

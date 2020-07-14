@@ -187,7 +187,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-		if(!simon->checkIsClimbing())
+		if(!simon->checkIsClimbing() && simon->checkCanJump())
 			simon->SetState(SIMON_STATE_JUMP);
 		break;
 	case DIK_A:
