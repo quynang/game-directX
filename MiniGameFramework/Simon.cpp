@@ -223,24 +223,32 @@ void CSimon::Render()
 			if (nx_stair > 0) ani = SIMON_ANI_CLIMBING_DOWN_LEFT;
 			else ani = SIMON_ANI_CLIMBING_DOWN_RIGHT;
 		 	break;
-		case SIMON_STATE_IDLE_ON_STAIR_UP:
-		 	if (nx_stair > 0) ani = SIMON_ANI_IDLE_ON_STAIR_UP_RIGHT;
-		 	else ani = SIMON_ANI_IDLE_ON_STAIR_UP_LEFT;
+		case SIMON_STATE_IDLE_ON_STAIR:
+		 	if (nx_stair > 0 && nx > 0) ani = SIMON_ANI_IDLE_ON_STAIR_UP_RIGHT;
+		 	else if(nx_stair > 0 && nx < 0) ani = SIMON_ANI_IDLE_ON_STAIR_DOWN_LEFT;
+			else if(nx_stair < 0 && nx < 0)	ani = SIMON_ANI_IDLE_ON_STAIR_UP_LEFT;
+			else if(nx_stair < 0 && nx > 0)	ani = SIMON_ANI_IDLE_ON_STAIR_DOWN_RIGHT;
 		 	break;
-		case SIMON_STATE_IDLE_ON_STAIR_DOWN:
-		 	if (nx_stair < 0) ani = SIMON_ANI_IDLE_ON_STAIR_DOWN_RIGHT;
-		 	else ani = SIMON_ANI_IDLE_ON_STAIR_DOWN_LEFT;
-			break;
 		case SIMON_STATE_DUCKING:
 			if (nx > 0) ani = SIMON_ANI_DUCKING_RIGHT;
 			else ani = SIMON_ANI_DUCKING_LEFT;
+			break;
+		case SIMON_STATE_HITTING_ON_STAIR:
+			if (nx_stair > 0 && nx > 0)
+				ani = SIMON_ANI_ASCENDING_STAIR_RIGHT_AND_HITTING;
+			else if (nx_stair > 0 && nx < 0)
+				ani = SIMON_ANI_DESCENDING_STAIR_LEFT_AND_HITTING;
+			else if (nx_stair < 0 && nx > 0)
+				ani = SIMON_ANI_DESCENDING_STAIR_RIGHT_AND_HITTING;
+			else if (nx_stair > 0 && nx < 0)
+				ani = SIMON_ANI_ASCENDING_STAIR_LEFT_AND_HITTING;
+			isHitting = true;
 			break;
 		default:
 			if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
 			else ani = SIMON_ANI_IDLE_LEFT;
 	};
 
-	DebugOut(L"[INFO] current Simon animation %d\n", ani);
 	animation_set->at(ani)->Render(x, y, alpha);
 	if(isHitting) UseWhip(animation_set->at(ani)->GetCurrentFrame());
 
@@ -249,9 +257,13 @@ void CSimon::Render()
 	
 	if (vy > 0) isJumping = false;
 	
-	 if ((isHitting == false || isJumping == false) && !isClimbing) {
-	 	SetState(SIMON_STATE_IDLE);
-	 }
+	if ((isHitting == false || isJumping == false)) {
+
+		if(isClimbing)
+			SetState(SIMON_STATE_IDLE_ON_STAIR);
+		else  SetState(SIMON_STATE_IDLE);
+
+	}
 
 	RenderBoundingBox();
 }
@@ -327,11 +339,7 @@ void CSimon::SetState(int state)
 			vy = 0.07f;
 			nx = -nx_stair;
 			break;
-		case SIMON_STATE_IDLE_ON_STAIR_UP:
-			vx = 0;
-			vy = 0;
-			break;
-		case SIMON_STATE_IDLE_ON_STAIR_DOWN:
+		case SIMON_STATE_IDLE_ON_STAIR:
 			vx = 0;
 			vy = 0;
 			break;

@@ -12,8 +12,7 @@
 #define SIMON_STATE_STANDING_HITTING	400
 #define SIMON_STATE_CLIMBING_UP	500
 #define SIMON_STATE_CLIMBING_DOWN	600
-#define SIMON_STATE_IDLE_ON_STAIR_UP	700
-#define SIMON_STATE_IDLE_ON_STAIR_DOWN	800
+#define SIMON_STATE_IDLE_ON_STAIR	700
 #define SIMON_STATE_DUCKING	900
 #define SIMON_STATE_HITTING_ON_STAIR	1000
 #define SIMON_STATE_FREEZE	1100
@@ -40,8 +39,8 @@
 #define SIMON_ANI_DUCKING_LEFT	19
 #define SIMON_ANI_ASCENDING_STAIR_LEFT_AND_HITTING	20
 #define SIMON_ANI_DESCENDING_STAIR_LEFT_AND_HITTING	21
-#define SIMON_ANI_ASCENDING_RIGHT_AND_HITTING	22
-#define SIMON_ANI_DESCENDING_RIGHT_AND_HITTIN	23
+#define SIMON_ANI_ASCENDING_STAIR_RIGHT_AND_HITTING	22
+#define SIMON_ANI_DESCENDING_STAIR_RIGHT_AND_HITTING	23
 
 #define SIMON_HAND_OFFSET_X	4
 #define SIMON_HAND_OFFSET_Y 6
@@ -66,6 +65,7 @@ class CSimon : public CGameObject
 	bool canClimbDown = false;
 	bool canClimbUp = false;
 	bool isDucking = false;
+	bool canJump = true;
 	int nx_stair = 1;
 	CWhip* whip;
 	DWORD freezeTimer = 0;
@@ -85,6 +85,7 @@ public:
 	bool checkIsClimbing() { return isClimbing;  }
 	void setIsClimbing(bool value) { isClimbing = value; }
 	void setIsDucking(bool value) { isDucking = value; }
+	bool checkCanJump(bool value) { return canJump; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	void Reset();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
