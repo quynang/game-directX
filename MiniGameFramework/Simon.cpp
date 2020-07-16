@@ -111,7 +111,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	//DebugOut(L"[INFO] Simon can climb down  : %d \n", canClimbDown);
 	//DebugOut(L"[INFO] Simon can climb up  : %d \n", canClimbUp);
-
+	
 	coEvents.clear();
 
 	CalcPotentialCollisions(coObjects, coEvents);
@@ -189,7 +189,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
-
+	
 	
 }
 
@@ -291,20 +291,35 @@ void CSimon::UseWhip(int currentFrame) {
 			phương hiện tại Simon.
 		**Nhìn vào textures của Simon để thấy rõ hơn.
 	*/
+
+	int hand_offset_y = SIMON_HAND_OFFSET_Y;
+	int hand_offset_x = SIMON_HAND_OFFSET_X;
+	if (state == SIMON_STATE_SITTING_AND_HITTING) {
+		hand_offset_y += 8;
+	}
+
+	//Điểu chỉnh sai lệch của cây roi khi simon đang leo lên cầu thang. Đây là trường hợp đặc biệt. 
+	if (state == SIMON_STATE_HITTING_ON_STAIR && nx_stair > 0 && nx > 0) {
+		hand_offset_y += 2;
+	}
+
+	if (state == SIMON_STATE_HITTING_ON_STAIR && nx_stair < 0 && nx < 0) {
+		hand_offset_y += 2;
+	}
 	switch(currentFrame) {
 		case 0:
-			if(nx > 0) whip->SetPosition(this->x - whip->GetBoxWidthSetup1ByCurrentLevel(), this->y + SIMON_HAND_OFFSET_Y);
-			else whip->SetPosition(this->x + SIMON_BOX_WIDTH, this->y + SIMON_HAND_OFFSET_Y);
+			if(nx > 0) whip->SetPosition(this->x - whip->GetBoxWidthSetup1ByCurrentLevel(), this->y + hand_offset_y);
+			else whip->SetPosition(this->x + SIMON_BOX_WIDTH, this->y + hand_offset_y);
 			whip->SetState(WHIP_STATE_SETUP_1);
 			break;
 		case 1:
-			if (nx > 0) whip->SetPosition(this->x - whip->GetBoxWidthSetup2ByCurrentLevel(), this->y + SIMON_HAND_OFFSET_Y);
-			else whip->SetPosition(this->x + SIMON_BOX_WIDTH, this->y + SIMON_HAND_OFFSET_Y);
+			if (nx > 0) whip->SetPosition(this->x - whip->GetBoxWidthSetup2ByCurrentLevel(), this->y + hand_offset_y);
+			else whip->SetPosition(this->x + SIMON_BOX_WIDTH, this->y + hand_offset_y);
 			whip->SetState(WHIP_STATE_SETUP_2);
 			break;
 		case 2:
-			if (nx > 0) whip->SetPosition(this->x + SIMON_BOX_WIDTH + SIMON_HAND_OFFSET_X, this->y + SIMON_HAND_OFFSET_Y);
-			else whip->SetPosition(this->x - whip->GetBoxWidthCrackByCurrentLevel() - SIMON_HAND_OFFSET_X, this->y + SIMON_HAND_OFFSET_Y);
+			if (nx > 0) whip->SetPosition(this->x + SIMON_BOX_WIDTH + hand_offset_x, this->y + hand_offset_y);
+			else whip->SetPosition(this->x - whip->GetBoxWidthCrackByCurrentLevel() - hand_offset_x, this->y + hand_offset_y);
 			whip->SetState(WHIP_STATE_CRACK);
 			//whip->RenderBoundingBox();
 			break;
@@ -367,6 +382,7 @@ void CSimon::SetState(int state)
 			break;
 		case SIMON_STATE_DUCKING:
 			vx = 0;
+			vy = 0;
 			isDucking = true;
 			break;
 		case SIMON_STATE_HITTING_ON_STAIR:
@@ -388,8 +404,26 @@ void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	
 	top = y;
 	left = x;
-	right = x + SIMON_BOX_WIDTH;
-	bottom = y + SIMON_BOX_HEIGHT;
+	int _width = SIMON_BOX_WIDTH;
+	int _height = SIMON_BOX_HEIGHT;
+
+	if (state == SIMON_STATE_SITTING_AND_HITTING) {
+		top = y + 8;
+		_height -= 8;
+	}
+
+	else if (isDucking) {
+		top = y + 8;
+		_height -= 8;
+	}
+
+	else if (isJumping) {
+		_height -= 8;
+	}
+
+
+	right = left + _width;
+	bottom = top + _height;
 	
 }
 

@@ -10,7 +10,7 @@
 CWhip::CWhip(float x, float y) : CGameObject()
 {
 	SetState(WHIP_STATE_SETUP_1);
-	level = WHIP_LV3;
+	level = WHIP_LV1;
 	this->x = x;
 	this->y = y;
 	this->vx = 0; 
