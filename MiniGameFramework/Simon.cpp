@@ -36,7 +36,6 @@ CSimon::CSimon(float x, float y) : CGameObject()
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	if (state == SIMON_STATE_DUCKING);
 	whip->Update(dt, coObjects);
 	CGameObject::Update(dt);
 	if(!isClimbing)
@@ -244,6 +243,7 @@ void CSimon::Render()
 			if (nx > 0) ani = SIMON_ANI_SITTING_AND_HITTING_RIGHT;
 			else ani = SIMON_ANI_SITTING_AND_HITTING_LEFT;
 			isHitting = true;
+			isDucking = false;
 			break;
 		case SIMON_STATE_HITTING_ON_STAIR:
 			if (nx_stair > 0 && nx > 0)
@@ -270,7 +270,7 @@ void CSimon::Render()
 	if (vy > 0) isJumping = false;
 	
 	if (isHitting == false || isJumping == false) {
-		if (isClimbing) SetState(SIMON_STATE_IDLE_ON_STAIR);	
+		if (isClimbing) SetState(SIMON_STATE_IDLE_ON_STAIR);
 		else  SetState(SIMON_STATE_IDLE);
 	}
 
@@ -316,21 +316,18 @@ void CSimon::UseWhip(int currentFrame) {
 
 void CSimon::SetState(int state)
 {
-	/*if (isDucking) {
-		
-		switch (state)
-		{
-			case SIMON_STATE_DUCKING:
-				CGameObject::SetState(state);
-				vx = 0;
-				vy = 0;
-				break;
+	//Vì trong trạng thái Ducking, ta chỉ có thể SetSate ngồi và đánh.
+	if (isDucking) {
+		if (state == SIMON_STATE_SITTING_AND_HITTING) {
+			CGameObject::SetState(state);
+			return;
 		}
 	}
-	*/
-			
-	if (!isHitting && !isJumping && !isFreeze) {
-		CGameObject::SetState(state);
+	
+	//Nếu simon trong thái hitting, ducking, jumping thì không thực hiện đổi state được. Vì nó cần thời gian để kết thúc trạng thái hiện tại.
+	//Ví dụ: simon đang đánh thì phải đợi nó đánh hết 1 vòng (nghĩa là đợi nó render hết 1 vòng animations của hitting) rồi ta mới được SetState khác.
+	if (!isHitting && !isJumping && !isFreeze && !isDucking) {
+		
 
 		switch (state)
 		{
@@ -381,6 +378,8 @@ void CSimon::SetState(int state)
 			break;
 
 		}
+
+		CGameObject::SetState(state);
 	}
 }
 

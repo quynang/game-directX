@@ -219,11 +219,11 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	{
 
 	case DIK_DOWN:
-		if(simon->checkIsClimbing())
+		if (simon->checkIsClimbing())
 			simon->SetState(SIMON_STATE_IDLE_ON_STAIR);
-		else {
+		else
+			simon->setIsDucking(false);
 			simon->SetState(SIMON_STATE_IDLE);
-		}
 		break;
 	case DIK_RIGHT:
 		if(simon->checkIsClimbing())
@@ -253,11 +253,11 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 		if (simon->checkCanClimbDown()) {
 			simon->setIsClimbing(true);
 			simon->SetState(SIMON_STATE_CLIMBING_DOWN);
-		}
-	else {
-		simon->SetState(SIMON_STATE_DUCKING);
+		} else {
 
-	}
+			simon->SetState(SIMON_STATE_DUCKING);
+
+		}
 
 	if (game->IsKeyDown(DIK_Z)) {
 		if (simon->checkIsClimbing()) simon->SetState(SIMON_STATE_HITTING_ON_STAIR);
