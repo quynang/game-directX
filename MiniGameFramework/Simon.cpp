@@ -36,6 +36,7 @@ CSimon::CSimon(float x, float y) : CGameObject()
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	if (state == SIMON_STATE_DUCKING);
 	whip->Update(dt, coObjects);
 	CGameObject::Update(dt);
 	if(!isClimbing)
@@ -239,6 +240,11 @@ void CSimon::Render()
 			if (nx > 0) ani = SIMON_ANI_DUCKING_RIGHT;
 			else ani = SIMON_ANI_DUCKING_LEFT;
 			break;
+		case SIMON_STATE_SITTING_AND_HITTING:
+			if (nx > 0) ani = SIMON_ANI_SITTING_AND_HITTING_RIGHT;
+			else ani = SIMON_ANI_SITTING_AND_HITTING_LEFT;
+			isHitting = true;
+			break;
 		case SIMON_STATE_HITTING_ON_STAIR:
 			if (nx_stair > 0 && nx > 0)
 				ani = SIMON_ANI_ASCENDING_STAIR_RIGHT_AND_HITTING;
@@ -263,12 +269,9 @@ void CSimon::Render()
 	
 	if (vy > 0) isJumping = false;
 	
-	if ((isHitting == false || isJumping == false)) {
-
-		if(isClimbing)
-			SetState(SIMON_STATE_IDLE_ON_STAIR);
+	if (isHitting == false || isJumping == false) {
+		if (isClimbing) SetState(SIMON_STATE_IDLE_ON_STAIR);	
 		else  SetState(SIMON_STATE_IDLE);
-
 	}
 
 	RenderBoundingBox();
@@ -313,7 +316,20 @@ void CSimon::UseWhip(int currentFrame) {
 
 void CSimon::SetState(int state)
 {
-	if (!isHitting && !isJumping && !isFreeze && !isDucking) {
+	/*if (isDucking) {
+		
+		switch (state)
+		{
+			case SIMON_STATE_DUCKING:
+				CGameObject::SetState(state);
+				vx = 0;
+				vy = 0;
+				break;
+		}
+	}
+	*/
+			
+	if (!isHitting && !isJumping && !isFreeze) {
 		CGameObject::SetState(state);
 
 		switch (state)
@@ -327,6 +343,7 @@ void CSimon::SetState(int state)
 			nx = -1;
 			break;
 		case SIMON_STATE_IDLE:
+			isDucking = false;
 			vx = 0;
 			break;
 		case SIMON_STATE_JUMP:
@@ -353,7 +370,7 @@ void CSimon::SetState(int state)
 			break;
 		case SIMON_STATE_DUCKING:
 			vx = 0;
-			vy = 0;
+			isDucking = true;
 			break;
 		case SIMON_STATE_HITTING_ON_STAIR:
 			vx = 0;
@@ -369,10 +386,12 @@ void CSimon::SetState(int state)
 
 void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	left = x;
+	
 	top = y;
+	left = x;
 	right = x + SIMON_BOX_WIDTH;
 	bottom = y + SIMON_BOX_HEIGHT;
+	
 }
 
 

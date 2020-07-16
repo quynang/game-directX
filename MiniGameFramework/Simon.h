@@ -13,6 +13,7 @@
 #define SIMON_STATE_CLIMBING_UP	500
 #define SIMON_STATE_CLIMBING_DOWN	600
 #define SIMON_STATE_IDLE_ON_STAIR	700
+#define SIMON_STATE_SITTING_AND_HITTING	800
 #define SIMON_STATE_DUCKING	900
 #define SIMON_STATE_HITTING_ON_STAIR	1000
 #define SIMON_STATE_FREEZE	1100
@@ -41,6 +42,8 @@
 #define SIMON_ANI_DESCENDING_STAIR_LEFT_AND_HITTING	21
 #define SIMON_ANI_ASCENDING_STAIR_RIGHT_AND_HITTING	22
 #define SIMON_ANI_DESCENDING_STAIR_RIGHT_AND_HITTING	23
+#define SIMON_ANI_SITTING_AND_HITTING_LEFT	24
+#define SIMON_ANI_SITTING_AND_HITTING_RIGHT	25
 
 #define SIMON_HAND_OFFSET_X	4
 #define SIMON_HAND_OFFSET_Y 6
@@ -87,7 +90,10 @@ public:
 	bool checkIsClimbing() { return isClimbing;  }
 	void setIsClimbing(bool value) { isClimbing = value; }
 	void setIsDucking(bool value) { isDucking = value; }
+	bool checkIsDucking() { return isDucking; }
 	bool checkCanJump() { return canJump; }
+	bool checkIsJumping() { return isJumping; }
+	bool checkIsHitting() { return isHitting; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	void Reset();
 	void StartJump() { start_jump = GetTickCount(); }
