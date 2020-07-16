@@ -299,6 +299,7 @@ void CSimon::UseWhip(int currentFrame) {
 	}
 
 	//Điểu chỉnh sai lệch của cây roi khi simon đang leo lên cầu thang. Đây là trường hợp đặc biệt. 
+	//Nếu chú ý thì sprite leo lên cầu thang sẽ có cái tay dài hơn và thấp hơn.
 	if (state == SIMON_STATE_HITTING_ON_STAIR && nx_stair > 0 && nx > 0) {
 		hand_offset_y += 2;
 	}
@@ -387,6 +388,7 @@ void CSimon::SetState(int state)
 			break;
 		case SIMON_STATE_HITTING_ON_STAIR:
 			vx = 0;
+			vy = 0;
 			break;
 		case SIMON_STATE_FREEZE:
 			vx = 0;
