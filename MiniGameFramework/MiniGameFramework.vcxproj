@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClInclude Include="Animations.h" />
     <ClInclude Include="Brick.h" />
+    <ClInclude Include="Candle.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="FireBombEffect.h" />
@@ -152,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="Candle.cpp" />
     <ClCompile Include="FireBombEffect.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />

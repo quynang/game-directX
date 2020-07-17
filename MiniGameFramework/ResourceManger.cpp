@@ -6,6 +6,7 @@
 #include "Brick.h"
 #include "StairBottom.h"
 #include "StairTop.h"
+#include "Candle.h"
 
 
 CResourceManager* CResourceManager::__instance = NULL;
@@ -135,6 +136,9 @@ void CResourceManager::_ParseSection_OBJECTS(string line, vector<LPGAMEOBJECT> &
 		break;
 	case 3: 
 		obj = new CStairTop();
+		break;
+	case 4:
+		obj = new CCandle();
 		break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);

@@ -6,6 +6,7 @@
 #include "Whip.h"
 #include "Game.h"
 #include "TourchFlame.h"
+#include "Candle.h"
 
 CWhip::CWhip(float x, float y) : CGameObject()
 {
@@ -28,6 +29,12 @@ void CWhip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (dynamic_cast<CTourchFlame*>(collidingObjects.at(i))) {
 				CTourchFlame *tourchFlame = dynamic_cast<CTourchFlame *>(collidingObjects.at(i));
 				tourchFlame->SetState(TOURCH_FLAME_STATE_DESTROY);
+	
+			}
+
+			if (dynamic_cast<CCandle*>(collidingObjects.at(i))) {
+				CCandle *candle = dynamic_cast<CCandle *>(collidingObjects.at(i));
+				candle->SetState(CANDLE_STATE_DESTROY);
 	
 			}
 		}

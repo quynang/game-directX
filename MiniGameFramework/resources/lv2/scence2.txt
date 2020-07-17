@@ -16,10 +16,11 @@ resources/simon.txt	50.0	110	1
 #brick
 #101	1001
 [OBJECTS]
-# type	x	y	ani_set_id(-1: hidden item)	item_type
+# type	x	y	ani_set_id(-1: hidden box)	item_type
 # 1: brick lv0
 # 2: stair bottom
 # 2: stair top
+# 4: candle
 #---- Brick----
 1	0	176	-1	-1
 1	16	176	-1	-1
@@ -54,3 +55,5 @@ resources/simon.txt	50.0	110	1
 3	160	102	-1	-1
 #Stair Bottom 
 2	76	76	-1	-1	1
+#candle
+4	90	125	51	2

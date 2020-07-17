@@ -94,8 +94,8 @@
 10064	1427	80	1451	103	0	8	-9
 10065	1410	79	1426	103	0	0	-8
 10066	1385	79	1407	102	0	0	-8
-# ===== WHIP ======= 2xxxx
 
+# ===== WHIP ======= 2xxxx
 #------whip lv1----------
 #setup1 left
 20001	1	485	9	508	0	-7	1
@@ -147,13 +147,16 @@
 30004	614	482	622	492	0	0	0
 30005	623	479	639	493	0	0	0
 30006	641	477	655	493	0	0	0
-
-
 #====ITEMS==== 4xxxx
 # small heart
 40001	18	1	26	9	1	0	0
 #wheapon collection
 40002	1	1	17 	17 	1	0	0
+
+#=== GENERAL OBJECT ==== 5xxxx
+#candle
+50001	157	3	165	17	1	0	0
+50002	166	3	174	17	1	0	0
 
 [ANIMATIONS]
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
@@ -242,6 +245,10 @@
 401	40001	100
 402	40002	100
 
+#=== GENERAL OBJECT ==== 5xx
+#candle
+501	50001	100	50002	100
+
 [ANIMATION_SETS]
 # id	ani1	ani2	ani3
 #====SIMON===== 1x
@@ -251,4 +258,7 @@
 #===HIT EFFECT 3x==== 3x
 31	301	302
 #===ITEMS==== 4x
-41	401	402
+41	401	402	403
+#=== GENERAL OBJECT ==== 5x
+#candle
+51	501
