@@ -2,10 +2,12 @@
 #include "Game.h"
 #include "PlayScence.h"
 #include "Item.h"
-CCandle::CCandle() {
+CCandle::CCandle(float x, float y) {
 	isVisible = true;
 	hitEffect = new CHitEffect();
 	fireBombEffect = new CFireBombEffect();
+	this->x = x;
+	this->y = y;
 }
 void CCandle::Render()
 {

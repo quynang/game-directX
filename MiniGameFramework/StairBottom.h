@@ -14,7 +14,7 @@ private:
 	int direction;
 	
 public:
-	CStairBottom(int stair_direction);
+	CStairBottom(float x, float y, int stair_direction);
 	int GetDirection() { return direction; }
 	D3DXVECTOR2 getPosition() { return D3DXVECTOR2(this->x, this->y); };
 	void Render();

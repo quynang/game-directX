@@ -190,7 +190,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 	
-	
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
 void CSimon::Render()
@@ -264,7 +264,7 @@ void CSimon::Render()
 	animation_set->at(ani)->Render(x, y, alpha);
 	if(isHitting) UseWhip(animation_set->at(ani)->GetCurrentFrame());
 
-	if (isHitting == true && animation_set->at(ani)->isLastFrame()) isHitting = false;
+	if (isHitting == true && animation_set->at(ani)->isLastFrame()) isHitting = false; 
 	
 	
 	if (vy > 0) isJumping = false;

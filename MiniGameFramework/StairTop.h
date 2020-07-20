@@ -8,7 +8,7 @@ class CStairTop : public CGameObject
 {
 	virtual void GetBoundingBox(float &left, float& top, float &right, float &bottom);
 public:
-	CStairTop();
+	CStairTop(float x, float y) { this->x = x; this->y = y; }
 	void Render();
 	D3DXVECTOR2 getPosition() { return D3DXVECTOR2(this->x, this->y); };
 };

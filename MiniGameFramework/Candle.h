@@ -17,7 +17,7 @@ class CCandle : public CGameObject
 	CHitEffect *hitEffect;
 	CFireBombEffect* fireBombEffect;
 public:
-	CCandle();
+	CCandle(float x, float y);
 	void SetVisible(bool value);
 	void SetState(int state);
 };

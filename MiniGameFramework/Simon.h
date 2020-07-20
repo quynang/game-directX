@@ -74,7 +74,6 @@ class CSimon : public CGameObject
 	DWORD start_jump;
 	CWhip* whip;
 	DWORD freezeTimer = 0;
-	D3DXVECTOR2 handPosition;
 
 	void UseWhip(int currentFrame);
 

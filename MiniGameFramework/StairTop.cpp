@@ -1,6 +1,4 @@
 #include "StairTop.h"
-CStairTop::CStairTop() {
-}
 
 void CStairTop::Render() {
 	RenderBoundingBox();

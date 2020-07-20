@@ -17,7 +17,7 @@ class CTourchFlame : public CGameObject
 	CHitEffect *hitEffect;
 	CFireBombEffect* fireBombEffect;
 public:
-	CTourchFlame();
+	CTourchFlame(float x, float y);
 	void SetVisible(bool value);
 	void SetState(int state);
 };

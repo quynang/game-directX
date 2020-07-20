@@ -2,21 +2,22 @@
 #include "Game.h"
 #include "PlayScence.h"
 #include "Item.h"
-CTourchFlame::CTourchFlame() {
+CTourchFlame::CTourchFlame(float x, float y) {
 	isVisible = true;
 	hitEffect = new CHitEffect();
 	fireBombEffect = new CFireBombEffect();
+	this->x = x;
+	this->y = y;
 }
 void CTourchFlame::Render()
 {
 
-	hitEffect->Render();
-	fireBombEffect->Render();
 	if (isVisible) {
 		animation_set->at(0)->Render(x, y);
 		RenderBoundingBox();
 	}
-
+	hitEffect->Render();
+	fireBombEffect->Render();
 }
 
 void CTourchFlame::GetBoundingBox(float &left, float &top, float &right, float &bottom)

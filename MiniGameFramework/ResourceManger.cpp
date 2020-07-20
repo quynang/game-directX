@@ -7,6 +7,7 @@
 #include "StairBottom.h"
 #include "StairTop.h"
 #include "Candle.h"
+#include "Knight.h"
 
 
 CResourceManager* CResourceManager::__instance = NULL;
@@ -119,33 +120,33 @@ void CResourceManager::_ParseSection_OBJECTS(string line, vector<LPGAMEOBJECT> &
 	float y = atof(tokens[2].c_str());
 	int ani_set_id = atoi(tokens[3].c_str());
 	int item_type = atoi(tokens[4].c_str());
-	int stair_direction;
 	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 	CGameObject* obj = NULL;
 	switch (object_type)
 	{
 	case 0:
-		obj = new CTourchFlame();
+		obj = new CTourchFlame(x, y);
 		break;
 	case 1:
-		obj = new CBrick();
+		obj = new CBrick(x, y);
 		break;
 	case 2:
-		stair_direction = atoi(tokens[5].c_str());
-		obj = new CStairBottom(stair_direction);
+		obj = new CStairBottom(x, y, atoi(tokens[5].c_str()));
 		break;
 	case 3: 
-		obj = new CStairTop();
+		obj = new CStairTop(x, y);
 		break;
 	case 4:
-		obj = new CCandle();
+		obj = new CCandle(x, y);
+		break;
+	case 5:
+		obj = new CKnight(x, y, atoi(tokens[5].c_str()));
 		break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
 	}
 
-	obj->SetPosition(x, y);
 	if (ani_set_id != -1) {
 		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 		obj->SetAnimationSet(ani_set);

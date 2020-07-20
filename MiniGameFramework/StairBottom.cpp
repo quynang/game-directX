@@ -1,6 +1,8 @@
 #include "StairBottom.h"
-CStairBottom::CStairBottom(int stair_diretion) {
+CStairBottom::CStairBottom(float x, float y, int stair_diretion) {
 	this->direction = stair_diretion;
+	this->x = x;
+	this->y = y;
 }
 
 void CStairBottom::Render() {
