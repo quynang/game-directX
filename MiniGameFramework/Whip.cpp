@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "TourchFlame.h"
 #include "Candle.h"
+#include "Knight.h"
 
 CWhip::CWhip(float x, float y) : CGameObject()
 {
@@ -21,24 +22,40 @@ CWhip::CWhip(float x, float y) : CGameObject()
 
 void CWhip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CGameObject::Update(dt);
+	//CGameObject::Update(dt);
+	
 	vector<LPGAMEOBJECT> collidingObjects;
 	if (state == WHIP_STATE_CRACK) {
+
 		this->CheckColliding(coObjects, collidingObjects);
 		for (UINT i = 0; i < collidingObjects.size(); i++) {
 			if (dynamic_cast<CTourchFlame*>(collidingObjects.at(i))) {
 				CTourchFlame *tourchFlame = dynamic_cast<CTourchFlame *>(collidingObjects.at(i));
 				tourchFlame->SetState(TOURCH_FLAME_STATE_DESTROY);
+				DebugOut(L"[INFO] Whip is colliding with Tourch \n");
 	
 			}
 
 			if (dynamic_cast<CCandle*>(collidingObjects.at(i))) {
 				CCandle *candle = dynamic_cast<CCandle *>(collidingObjects.at(i));
 				candle->SetState(CANDLE_STATE_DESTROY);
+				DebugOut(L"[INFO] Whip is colliding with Candle \n");
 	
 			}
+
+			if (dynamic_cast<CKnight*>(collidingObjects.at(i))) {
+				CKnight *knight = dynamic_cast<CKnight *>(collidingObjects.at(i));
+				knight->IsHitted();
+				DebugOut(L"[INFO] Whip is colliding with Knight\n");
+
+
+			}
 		}
+		state = WHIP_STATE_UNUSED;
 	}
+
+	
+
 }
 
 
@@ -57,6 +74,7 @@ void CWhip::Render()
 	case WHIP_STATE_CRACK:
 		ani = aniCrackByCurrentLevel();
 		RenderBoundingBox();
+		DebugOut(L"[ERR] Test colliding\n");
 		break;
 	}
 
