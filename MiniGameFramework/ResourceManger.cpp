@@ -8,6 +8,7 @@
 #include "StairTop.h"
 #include "Candle.h"
 #include "Knight.h"
+#include "Bat.h"
 
 
 CResourceManager* CResourceManager::__instance = NULL;
@@ -141,6 +142,9 @@ void CResourceManager::_ParseSection_OBJECTS(string line, vector<LPGAMEOBJECT> &
 		break;
 	case 5:
 		obj = new CKnight(x, y, atoi(tokens[5].c_str()));
+		break;
+	case 6:
+		obj = new CBat(x, y);
 		break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);

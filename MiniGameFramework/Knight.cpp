@@ -70,9 +70,11 @@ void CKnight::SetState(int state) {
 
 }
 void CKnight::IsHitted() {
-	hitEffect->SetPosition(x - 5, y + 5);
+	hitEffect->SetPosition(x + 5, y + 5);
 	hitEffect->setIsVisible(true);
-	DebugOut(L"[ERR] Is Hitted\n");
-
-	
+	if (hp <= 0) {
+		fireBombEffect->SetPosition(x + 5, y + 5);
+		fireBombEffect->setIsVisible(true);
+		isVisible = false;
+	}
 }

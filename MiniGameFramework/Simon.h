@@ -98,4 +98,26 @@ public:
 	void StartJump() { start_jump = GetTickCount(); }
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void StartFreezeState();
+	void useSimonBackupWithInfoNeeded(
+		int whipLevel,
+		bool isClimbing,
+		bool canClimbUp,
+		bool canClimbDown,
+		int state
+	);
+
+	void getSimonBackupInfoNeeded(
+		int& whipLevel,
+		bool& isClimbing,
+		bool& canClimbUp,
+		bool& canClimbDown,
+		int& state
+	)
+	{
+		whipLevel = this->whip->getCurrentLevel();
+		isClimbing = this->isClimbing;
+		canClimbUp = this->canClimbUp;
+		canClimbDown = this->canClimbDown;
+		state = this->state;
+	};
 };

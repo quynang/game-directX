@@ -380,6 +380,8 @@ void CSimon::SetState(int state)
 		case SIMON_STATE_IDLE_ON_STAIR:
 			vx = 0;
 			vy = 0;
+			canClimbDown = true;
+			canClimbUp = true;
 			break;
 		case SIMON_STATE_DUCKING:
 			vx = 0;
@@ -490,5 +492,19 @@ void CSimon::Load(LPCWSTR filePath) {
 	//DebugOut(L"[INFO] whip animation sets %d\n", whip_ani_set->size());
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", filePath);
+}
 
+void CSimon::useSimonBackupWithInfoNeeded(
+	int whipLevel,
+	bool isClimbing,
+	bool canClimbUp,
+	bool canClimbDown,
+	int state
+)
+{
+	this->whip->SetLevel(whipLevel);
+	this->isClimbing = isClimbing;
+	this->canClimbUp = canClimbUp;
+	this->canClimbDown = canClimbDown;
+	this->state = state;
 }

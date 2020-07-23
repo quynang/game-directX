@@ -3,28 +3,28 @@
 #include "HitEffect.h"
 #include "FireBombEffect.h"
 
-#define KNIGHT_WALKING_SPEED	0.02f 
-#define KNIGHT_BOX_WIDTH	16
-#define KNIGHT_BOX_HEIGHT	31
+#define BAT_FLY_SPEED	0.02f 
+#define BAT_BOX_WIDTH	16
+#define BAT_BOX_HEIGHT	16
 
-#define KNIGHT_ANI_WALK_LEFT	0
-#define KNIGHT_ANI_WALK_RIGHT	1
+#define BAT_ANI_SLEEPING	0
+#define BAT_ANI_FLY_LEFT	1
+#define BAT_ANI_FLY_RIGHT	2
 
-#define KNINGHT_STATE_WALKING	100
+#define BAT_STATE_SLEEPING	100
+#define BAT_STATE_FLYING	200
 
-class CKnight : public CGameObject
+class CBat : public CGameObject
 {
 	bool isVisible = false;
 	CHitEffect *hitEffect;
 	CFireBombEffect* fireBombEffect;
-	int limit_distance_x;
-	float distance_gone = 0;
+	int hp = 50;
+	DWORD timer = 0;
 	float start_x;
 	float start_y;
-	int hp = 100;
 public:
-	CKnight(float x, float y, int limit_distance_x );
-	void Load(LPCWSTR filePath);
+	CBat(float x, float y );
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
 	void SetState(int state);

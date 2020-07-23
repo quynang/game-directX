@@ -47,9 +47,9 @@ void CPlayScene::_ParseSection_PLAYER(string line)
 	float x = atof(tokens[1].c_str());
 	float y = atof(tokens[2].c_str());
 	player = new CSimon(x, y);
+	
 	player->Load(path);
 	int ani_set_id = atoi(tokens[3].c_str());
-	
 	objects.push_back(player);
 	
 }
@@ -206,8 +206,6 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_3: 
 		CGame::GetInstance()->SwitchScene(3);
-		simon->setIsClimbing(true);
-		//simon->SetState(SIMON_STATE_IDLE_ON_STAIR_UP);
 		break;
 	}
 }

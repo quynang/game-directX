@@ -17,15 +17,33 @@ resources/simon.txt	50.0	110	1
 103	534	29	550	60	12	0	0
 104	517	28	533	60	12	0	0
 105	500	29	516	60	12	0	0
+#Bat sleeping
+200	239	11	251	25	12	0	0
+#Bat flying left
+201	254	11	270	27	12	0	0
+202	271	14	287	24	12	0	0
+203	288	12	204	26	12	0	0
+#Bat flying right
+204	679	11	695	27	12	0	0
+205	662	14	678	24	12	0	0
+206	645	12	661	26	12	0	0
+	
 [ANIMATIONS]
 #Knight walk left
 1	100	300	101	300	102	300
 #Knight walk right
-2	103	200	104	200	105	200
+2	103	300	104	300	105	300
+#Bat sleeping
+3	200	100
+#Bat flying left
+4	201	100	202	100	203	100
+#Bat flying right
+5	204	100	205	100	206	100
 [ANIMATION_SETS]
 #Knight
 1	1	2
-
+#Bat 
+2	3	4	5
 [OBJECTS]
 # type	x	y	ani_set_id(-1: hidden box)	item_type
 # 1: brick lv0
@@ -71,3 +89,5 @@ resources/simon.txt	50.0	110	1
 4	90	125	51	2
 #Knight have extra info is limited the distance x
 5	50	50	1	-1	70
+#Bat
+6	50	30	2	-1

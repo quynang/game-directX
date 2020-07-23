@@ -325,9 +325,10 @@ void CGame::_ParseSection_SETTINGS(string line)
 
 	if (tokens.size() < 2) return;
 	if (tokens[0] == "start")
-		current_scene = atoi(tokens[1].c_str());//Cái này là biến class luôn
+		current_scene = atoi(tokens[1].c_str());
 	else
 		DebugOut(L"[ERROR] Unknown game setting %s\n", ToWSTR(tokens[0]).c_str());
+	game_scene_start = current_scene;
 }
 
 void CGame::_ParseSection_SCENES(string line)
@@ -383,7 +384,17 @@ void CGame::Load(LPCWSTR gameFile)
 
 void CGame::SwitchScene(int scene_id)
 {
-	DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
+
+	int whipLevel ;
+	bool isClimbing;
+	bool canClimbUp;
+	bool canClimbDown;
+	int state;
+
+	if (scene_id != game_scene_start) {
+		((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer()->getSimonBackupInfoNeeded(whipLevel, isClimbing, canClimbUp, canClimbDown, state);
+	}
+	
 
 	scenes[current_scene]->Unload();
 	CMap::GetInstance()->Clear();
@@ -396,4 +407,6 @@ void CGame::SwitchScene(int scene_id)
 	LPSCENE s = scenes[scene_id];
 	CGame::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
 	s->Load();
+
+	if(scene_id != game_scene_start) ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer()->useSimonBackupWithInfoNeeded(whipLevel, isClimbing, canClimbUp, canClimbDown, state);
 }

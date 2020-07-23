@@ -45,9 +45,9 @@ void CWhip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			if (dynamic_cast<CKnight*>(collidingObjects.at(i))) {
 				CKnight *knight = dynamic_cast<CKnight *>(collidingObjects.at(i));
+				knight->DecreaseHP(50);
 				knight->IsHitted();
-				DebugOut(L"[INFO] Whip is colliding with Knight\n");
-
+				
 
 			}
 		}

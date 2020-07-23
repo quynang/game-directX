@@ -53,7 +53,7 @@
 class CWhip : public CGameObject
 {
 	bool isVisible = false;
-	int level = WHIP_LV2;
+	int level = WHIP_LV1;
 	int aniSetup1ByCurrentLevel() {
 		switch (level) {
 		case WHIP_LV1:
@@ -110,6 +110,8 @@ public:
 
 	void ResetLevel() { level = WHIP_LV1; }
 	void UpgradeLevel();
+	void SetLevel(int level) { this->level = level; }
+	int getCurrentLevel() { return level; }
 
 	void SetState(int state);
 
