@@ -72,8 +72,11 @@ void CTextures::Clear()
 {
 	for (auto x : textures)
 	{
-		LPDIRECT3DTEXTURE9 tex = x.second;
-		if (tex != NULL) tex->Release();
+		if (x.first != 99) {
+			LPDIRECT3DTEXTURE9 tex = x.second;
+			if (tex != NULL) tex->Release();
+		}
+	
 	}
 
 	textures.clear();

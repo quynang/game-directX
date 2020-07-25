@@ -25,7 +25,7 @@ CSprites* CSprites::GetInstance()
 void CSprite::Draw(float x, float y, int alpha)
 {
 	CGame* game = CGame::GetInstance();
-	game->Draw(x, y, texture, left, top, right, bottom, alpha, dx, dy);
+	game->Draw(x, y + 38, texture, left, top, right, bottom, alpha, dx, dy);
 }
 
 void CSprites::Add(int id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex, float dx, float dy)
@@ -48,8 +48,10 @@ void CSprites::Clear()
 {
 	for (auto x : sprites)
 	{
-		LPSPRITE s = x.second;
-		delete s;
+		if (x.first != 9999) {
+			LPSPRITE s = x.second;
+			delete s;
+		}
 	}
 
 	sprites.clear();

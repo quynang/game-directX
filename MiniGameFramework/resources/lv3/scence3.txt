@@ -1,6 +1,17 @@
 [MAP]
 resources/lv3/map-lv3.txt
+[OBJECTS]
+# type	x	y	ani_set_id(-1: hidden box)	item_type
+# 1: brick lv0
+# 2: stair bottom
+# 2: stair top
+# 4: candle
+# 5: Knight
+#Stair Top
+3	448	102	-1	-1
+#---- Brick----
+1	464	112	-1	-1
 [PLAYER]
 # filePath	x	y	ani_set_id	extra_settings per object type
 # SIMON
-resources/simon.txt	382	165	1
+resources/simon.txt	372	165	1

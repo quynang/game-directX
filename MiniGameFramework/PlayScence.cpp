@@ -6,6 +6,7 @@
 #include "Utils.h"
 #include "Portal.h"
 #include "ResourceManager.h"
+#include "GameStatusBoard.h"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CPlayScenceKeyHandler(this);
+	gameStatusBoard = new CGameStatusBoard();
 }
 
 #define SCENE_SECTION_UNKNOWN -1
@@ -98,12 +100,12 @@ void CPlayScene::Load()
 		switch (section)
 		{
 		case SCENE_SECTION_MAP: _ParseSection_MAP(line); break;
-		case SCENE_SECTION_PLAYER: _ParseSection_PLAYER(line); break;
 		case SCENE_SECTION_TEXTURES: CResourceManager::GetInstance()->_ParseSection_TEXTURES(line); break;
 		case SCENE_SECTION_SPRITES: CResourceManager::GetInstance()->_ParseSection_SPRITES(line); break;
 		case SCENE_SECTION_ANIMATIONS: CResourceManager::GetInstance()->_ParseSection_ANIMATIONS(line); break;
 		case SCENE_SECTION_ANIMATION_SETS: CResourceManager::GetInstance()->_ParseSection_ANIMATION_SETS(line); break;
 		case SCENE_SECTION_OBJECTS: CResourceManager::GetInstance()->_ParseSection_OBJECTS(line, objects); break;
+		case SCENE_SECTION_PLAYER: _ParseSection_PLAYER(line); break;
 		}
 	}
 
@@ -122,6 +124,11 @@ void CPlayScene::Update(DWORD dt)
 		}
 	}
 
+	timeLimit;
+	timeGone +=  dt;
+	int timeRemain =  timeLimit - (int)timeGone * 0.001;
+	gameStatusBoard->Update(timeRemain);
+
 
 	if (!offUpdation) {
 		float cx, cy;
@@ -136,7 +143,7 @@ void CPlayScene::Update(DWORD dt)
 		if (cx > CMap::GetInstance()->getWidth() - game->GetScreenWidth()  ) cx = CMap::GetInstance()->getWidth() - game->GetScreenWidth();
 		CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
 		vector<LPGAMEOBJECT> coObjects;
-		for (size_t i = 1; i < objects.size(); i++)
+		for (size_t i = 0; i < objects.size() - 1; i++)
 		{
 			coObjects.push_back(objects[i]);
 		}
@@ -155,15 +162,17 @@ void CPlayScene::TurnOffGameUpdationByTimer(DWORD timer) {
 }
 void CPlayScene::Render()
 {
-
+	
 	CMap::GetInstance()->Render();
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+
+	gameStatusBoard->Render();
 }
 
 void CPlayScene::AddObject(LPGAMEOBJECT obj)
 {
-	objects.push_back(obj);
+	objects.insert(objects.begin(), obj);
 }
 
 /*
@@ -186,7 +195,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	CSimon* simon = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-	case DIK_SPACE:
+	case DIK_X:
 		if(!simon->checkIsClimbing() && simon->checkCanJump())
 			simon->SetState(SIMON_STATE_JUMP);
 		break;

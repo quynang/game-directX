@@ -5,12 +5,13 @@
 #include "Map.h"
 #include "GameObject.h"
 #include "Simon.h"
+#include "GameStatusBoard.h"
 
 
 class CPlayScene : public CScene //Chú ý nha. Cái này kế thừa từ thằng CScence
 {
 protected:
-
+	CGameStatusBoard* gameStatusBoard;
 	CSimon* player;				// A play scene has to have player, right? 
 
 	vector<LPGAMEOBJECT> objects;
@@ -19,6 +20,8 @@ protected:
 	void _ParseSection_PLAYER(string line);
 	bool offUpdation = false;
 	DWORD timerFlag = 0;
+	DWORD timeLimit = 300;
+	DWORD timeGone = 0;
 
 public:
 	CPlayScene(int id, LPCWSTR filePath);

@@ -9,6 +9,7 @@
 #include "Candle.h"
 #include "Knight.h"
 #include "Bat.h"
+#include "Portal.h"
 
 
 CResourceManager* CResourceManager::__instance = NULL;
@@ -145,6 +146,14 @@ void CResourceManager::_ParseSection_OBJECTS(string line, vector<LPGAMEOBJECT> &
 		break;
 	case 6:
 		obj = new CBat(x, y);
+		break;
+	case 50:
+		{
+			float r = atof(tokens[4].c_str());
+			float b = atof(tokens[5].c_str());
+			int scene_id = atoi(tokens[6].c_str());
+			obj = new CPortal(x, y, r, b, scene_id);
+		}
 		break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);

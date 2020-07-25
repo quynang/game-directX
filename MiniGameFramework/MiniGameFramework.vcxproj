@@ -132,6 +132,7 @@
     <ClInclude Include="FireBombEffect.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameStatusBoard.h" />
     <ClInclude Include="HiddenObject.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="Item.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="FireBombEffect.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameStatusBoard.cpp" />
     <ClCompile Include="HiddenObject.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="Item.cpp" />
