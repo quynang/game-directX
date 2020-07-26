@@ -24,7 +24,6 @@ class CKnight : public CGameObject
 	int hp = 100;
 public:
 	CKnight(float x, float y, int limit_distance_x );
-	void Load(LPCWSTR filePath);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
 	void SetState(int state);

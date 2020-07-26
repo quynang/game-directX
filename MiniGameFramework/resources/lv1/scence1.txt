@@ -24,9 +24,11 @@ resources/lv1/map-lv1.txt
 # type	x	y	ani_set_id	item_type(-1: haven't item)
 # 0: TourchFlame, 1: brick lv0
 # Tourch flame
-0	237	129	101	1
-0	400	129	101	2
-0	600	129	101	2
+0	96	128	101	1
+0	226	128	101	2
+0	353	128	101	2
+0	452	128	101	3
+0	569	128	101	4
 #---- Brick----
 1	0	160	102	-1
 1	32	160	102	-1

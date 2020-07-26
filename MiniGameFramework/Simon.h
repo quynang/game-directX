@@ -17,6 +17,7 @@
 #define SIMON_STATE_DUCKING	900
 #define SIMON_STATE_HITTING_ON_STAIR	1000
 #define SIMON_STATE_FREEZE	1100
+#define SIMON_STATE_ON_MOVING_BRICK	1200
 
 #define SIMON_ANI_IDLE_RIGHT	0
 #define SIMON_ANI_IDLE_LEFT		1
@@ -74,6 +75,7 @@ class CSimon : public CGameObject
 	DWORD start_jump;
 	CWhip* whip;
 	DWORD freezeTimer = 0;
+	bool isOnMovingBrick = false;
 
 	void UseWhip(int currentFrame);
 

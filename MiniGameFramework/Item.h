@@ -4,6 +4,8 @@
 #define ITEM_ANI_SETS	41
 #define TYPE_HEART	1
 #define TYPE_WHEAPON	2
+#define TYPE_WHITE_BAG	3
+#define TYPE_PURPLE_BAG	4
 #define TYPE_UNKNOWN	-1
 
 #define WHEAPON_BOX_WIDTH	16
@@ -12,6 +14,9 @@
 
 #define HEART_BOX_WIDTH	8
 #define HEART_BOX_HEIGHT	8
+
+#define BAG_BOX_WIDTH	15
+#define BAG_BOX_HEIGHT	15
 
 class CItem : public CGameObject
 {
@@ -37,6 +42,24 @@ class CWheapon : public CItem
 {
 public:
 	CWheapon(float x, float y);
+	void GetBoundingBox(float &left, float& top, float &right, float &bottom);
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
+	void Render();
+};
+
+class CWhiteBag : public CItem
+{
+public:
+	CWhiteBag(float x, float y);
+	void GetBoundingBox(float &left, float& top, float &right, float &bottom);
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
+	void Render();
+};
+
+class CPurpleBag : public CItem
+{
+public:
+	CPurpleBag(float x, float y);
 	void GetBoundingBox(float &left, float& top, float &right, float &bottom);
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	void Render();

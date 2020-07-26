@@ -15,6 +15,7 @@
 #include"Brick.h"
 #include "StairBottom.h"
 #include "StairTop.h"
+#include "BrickMoving.h"
 
 CSimon::CSimon(float x, float y) : CGameObject()
 {
@@ -38,6 +39,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	whip->Update(dt, coObjects);
 	CGameObject::Update(dt);
+	DebugOut(L"[INFO] Is colliding with brick moving: %f \n", vx);
 	if(!isClimbing)
 		vy += SIMON_GRAVITY*dt;
 
@@ -141,6 +143,10 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
+			if (dynamic_cast<CBrickMoving*>(e->obj)) {
+				CBrickMoving* brickMoving = dynamic_cast<CBrickMoving*>(e->obj);
+				vx = brickMoving->getMovingSpeed()*2;
+			}
 			if (dynamic_cast<CWheapon*>(e->obj))
 			{
 				CWheapon* wheapon = dynamic_cast<CWheapon*>(e->obj);
@@ -177,6 +183,18 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CHeart* heart = dynamic_cast<CHeart*>(e->obj);
 				heart->SetVisible(false);
 				//((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->TurnOffGameUpdationByTimer(3000);
+			}
+
+			if (dynamic_cast<CWhiteBag*>(e->obj)) {
+				CWhiteBag* whiteBag = dynamic_cast<CWhiteBag*>(e->obj);
+				whiteBag->SetVisible(false);
+				CGameStatusBoard::GetInstance()->IncreaseScore(200);
+			}
+
+			if (dynamic_cast<CPurpleBag*>(e->obj)) {
+				CPurpleBag* purple = dynamic_cast<CPurpleBag*>(e->obj);
+				purple->SetVisible(false);
+				CGameStatusBoard::GetInstance()->IncreaseScore(500);
 			}
 
 			if (dynamic_cast<CBrick*>(e->obj)) {
@@ -262,6 +280,9 @@ void CSimon::Render()
 				ani = SIMON_ANI_ASCENDING_STAIR_LEFT_AND_HITTING;
 			isHitting = true;
 			break;
+		case SIMON_STATE_ON_MOVING_BRICK:
+			if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
+			else ani = SIMON_ANI_IDLE_LEFT;
 		default:
 			if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
 			else ani = SIMON_ANI_IDLE_LEFT;
@@ -402,7 +423,6 @@ void CSimon::SetState(int state)
 			vx = 0;
 			vy = 0;
 			break;
-
 		}
 
 		CGameObject::SetState(state);

@@ -152,7 +152,10 @@
 40001	18	1	26	9	1	0	0
 #wheapon collection
 40002	1	1	17 	17 	1	0	0
-
+#White bag
+40003	79	1	94	16	1	0	0
+#Purple bag
+40004	62	1	77	16	1	0	0
 [ANIMATIONS]
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 # ==== SIMON ========= 1xx
@@ -239,7 +242,8 @@
 #=== ITEMS===== 4xx
 401	40001	100
 402	40002	100
-
+403	40003	100
+404	40004	100
 [ANIMATION_SETS]
 # id	ani1	ani2	ani3
 #====SIMON===== 1x
@@ -249,4 +253,4 @@
 #===HIT EFFECT 3x==== 3x
 31	301	302
 #===ITEMS==== 4x
-41	401	402
+41	401	402	403	404

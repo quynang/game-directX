@@ -10,6 +10,7 @@
 #include "Knight.h"
 #include "Bat.h"
 #include "Portal.h"
+#include "BrickMoving.h"
 
 
 CResourceManager* CResourceManager::__instance = NULL;
@@ -153,6 +154,11 @@ void CResourceManager::_ParseSection_OBJECTS(string line, vector<LPGAMEOBJECT> &
 			float b = atof(tokens[5].c_str());
 			int scene_id = atoi(tokens[6].c_str());
 			obj = new CPortal(x, y, r, b, scene_id);
+		}
+		break;
+	case 12:
+		{
+			obj = new CBrickMoving(x, y, atoi(tokens[5].c_str()));
 		}
 		break;
 	default:

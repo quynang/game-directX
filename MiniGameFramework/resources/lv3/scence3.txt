@@ -1,5 +1,57 @@
 [MAP]
 resources/lv3/map-lv3.txt
+[TEXTURES]
+12	resources/enemies.png	0	128	0
+13	resources/items.png	0	128	0
+# id	left	top	right	bottom	texture_id	dx	dy
+[SPRITES]
+#Knight walk left
+100	399	29	415	60	12	0	0
+101	416	28	432	60	12	0	0
+102	433	29	449	60	12	0	0
+#Knight walk right
+103	534	29	550	60	12	0	0
+104	517	28	533	60	12	0	0
+105	500	29	516	60	12	0	0
+#Bat sleeping
+200	239	11	251	25	12	0	0
+#Bat flying left
+201	254	11	270	27	12	0	0
+202	271	14	287	24	12	0	0
+203	288	12	204	26	12	0	0
+#Bat flying right
+204	679	11	695	27	12	0	0
+205	662	14	678	24	12	0	0
+206	645	12	661	26	12	0	0
+#candle
+207	157	3	165	17	13	0	0
+208	166	3	174	17	13	0	0
+#Brick moving
+300	64	69	96	77	13	0	0
+[ANIMATIONS]
+#Knight walk left
+1	100	300	101	300	102	300
+#Knight walk right
+2	103	300	104	300	105	300
+#Bat sleeping
+3	200	100
+#Bat flying left
+4	201	100	202	100	203	100
+#Bat flying right
+5	204	100	205	100	206	100
+#candle
+6	207	100	208	100
+#Brick moving
+7	300	100
+[ANIMATION_SETS]
+#Knight
+1	1	2
+#Bat 
+2	3	4	5
+#candle
+3	6
+#brick moving
+4	7
 [OBJECTS]
 # type	x	y	ani_set_id(-1: hidden box)	item_type
 # 1: brick lv0
@@ -11,6 +63,35 @@ resources/lv3/map-lv3.txt
 3	448	102	-1	-1
 #---- Brick----
 1	464	112	-1	-1
+1	448	112	-1	-1
+1	431	80	-1	-1
+1	415	80	-1	-1
+1	399	80	-1	-1
+1	383	80	-1	-1
+1	367	80	-1	-1
+1	351	80	-1	-1
+1	335	144	-1	-1
+1	319	144	-1	-1
+1	303	112	-1	-1
+1	287	112	-1	-1
+1	271	80	-1	-1
+1	255	80	-1	-1
+1	239	80	-1	-1
+1	223	80	-1	-1
+1	207	80	-1	-1
+1	191	80	-1	-1
+1	143	80	-1	-1
+1	127	80	-1	-1
+1	111	80	-1	-1
+1	95	80	-1	-1
+1	80	113	-1	-1
+1	64	113	-1	-1
+1	16	80	-1	-1
+1	0	80	-1	-1
+#Knight have extra info is limited the distance x
+5	319	113	1	-1	16
+#Brick moving have extra info is limited the distance x
+12	32	80	4	-1	32
 [PLAYER]
 # filePath	x	y	ani_set_id	extra_settings per object type
 # SIMON

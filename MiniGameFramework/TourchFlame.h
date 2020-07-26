@@ -8,6 +8,8 @@
 #define TOURCH_ANI_2	1
 #define TOURCH_FLAME_STATE_DESTROY 100
 #define TOURCH_FLAME_STATE_NORMAL	200
+#define TOURCH_FLAME_BOX_WIDTH	16
+#define TOURCH_FLAME_BOX_HEIGHT	30
 class CTourchFlame : public CGameObject
 {
 	bool isVisible = false;

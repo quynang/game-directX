@@ -14,7 +14,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CPlayScenceKeyHandler(this);
-	gameStatusBoard = new CGameStatusBoard();
+	gameStatusBoard = CGameStatusBoard::GetInstance();
 }
 
 #define SCENE_SECTION_UNKNOWN -1

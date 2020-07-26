@@ -46,9 +46,12 @@ LPSPRITE CSprites::Get(int id)
 */
 void CSprites::Clear()
 {
+
+	int globalSprites[] = {9999, 8001, 8002, 8003};
+	 
 	for (auto x : sprites)
 	{
-		if (x.first != 9999) {
+		if (find(begin(globalSprites), end(globalSprites), x.first) == end(globalSprites)) {
 			LPSPRITE s = x.second;
 			delete s;
 		}

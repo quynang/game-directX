@@ -6,6 +6,7 @@
 #include "Utils.h"
 #include "Game.h"
 #include "textures.h"
+#include <algorithm>
 
 CTextures* CTextures::__instance = NULL;
 
@@ -70,9 +71,13 @@ LPDIRECT3DTEXTURE9 CTextures::Get(unsigned int id)
 */
 void CTextures::Clear()
 {
+	
+
+	int globalTextures[] = {99, 88};
+	 
 	for (auto x : textures)
 	{
-		if (x.first != 99) {
+		if (find(begin(globalTextures), end(globalTextures), x.first) == end(globalTextures)) {
 			LPDIRECT3DTEXTURE9 tex = x.second;
 			if (tex != NULL) tex->Release();
 		}

@@ -31,7 +31,9 @@ void CWhip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		for (UINT i = 0; i < collidingObjects.size(); i++) {
 			if (dynamic_cast<CTourchFlame*>(collidingObjects.at(i))) {
 				CTourchFlame *tourchFlame = dynamic_cast<CTourchFlame *>(collidingObjects.at(i));
+				tourchFlame->SetVisible(false);
 				tourchFlame->SetState(TOURCH_FLAME_STATE_DESTROY);
+				
 				DebugOut(L"[INFO] Whip is colliding with Tourch \n");
 	
 			}
@@ -48,7 +50,6 @@ void CWhip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				knight->DecreaseHP(50);
 				knight->IsHitted();
 				
-
 			}
 		}
 		state = WHIP_STATE_UNUSED;

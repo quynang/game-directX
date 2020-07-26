@@ -8,6 +8,10 @@ CItem* CItem::Create(int type, float x, float y) {
 			return new CHeart(x, y);
 		case TYPE_WHEAPON: 
 			return new CWheapon(x, y);
+		case TYPE_WHITE_BAG:
+			return new CWhiteBag(x, y);
+		case TYPE_PURPLE_BAG:
+			return new CPurpleBag(x, y);
 		case TYPE_UNKNOWN:
 			return NULL;
 	}
@@ -99,5 +103,88 @@ void CHeart::GetBoundingBox(float& left, float& top, float& right, float& bottom
 		top = y;
 		right = x + HEART_BOX_WIDTH;
 		bottom = y + HEART_BOX_HEIGHT;
+	}
+}
+
+
+/*---------- WHITE BAG CLASS--------------*/
+
+CWhiteBag::CWhiteBag(float x, float y) {
+	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+	SetAnimationSet(animation_sets->Get(ITEM_ANI_SETS));
+	this->x = x; 
+	this->y = y;
+}
+void CWhiteBag::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects) {
+	CGameObject::Update(dt, coObjects);
+	vy += 0.0002f*dt;
+	
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+
+	CalcPotentialCollisions(coObjects, coEvents);
+
+	if (coEvents.size()==0)
+	{
+		x += dx; 
+		y += dy;
+	}
+}
+
+void CWhiteBag::Render() {
+	if (this->isVisible) {
+		animation_set->at(2)->Render(x, y);
+	}
+}
+
+void CWhiteBag::GetBoundingBox(float& left, float& top, float& right, float& bottom) {
+	if (isVisible) {
+		left = x;
+		top = y;
+		right = x + BAG_BOX_WIDTH;
+		bottom = y + BAG_BOX_HEIGHT;
+	}
+}
+
+/*---------- WHITE BAG CLASS--------------*/
+
+CPurpleBag::CPurpleBag(float x, float y) {
+	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+	SetAnimationSet(animation_sets->Get(ITEM_ANI_SETS));
+	this->x = x; 
+	this->y = y;
+}
+void CPurpleBag::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects) {
+	CGameObject::Update(dt, coObjects);
+	vy += 0.0002f*dt;
+	
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+
+	CalcPotentialCollisions(coObjects, coEvents);
+
+	if (coEvents.size()==0)
+	{
+		x += dx; 
+		y += dy;
+	}
+}
+
+void CPurpleBag::Render() {
+	if (this->isVisible) {
+		animation_set->at(3)->Render(x, y);
+	}
+}
+
+void CPurpleBag::GetBoundingBox(float& left, float& top, float& right, float& bottom) {
+	if (isVisible) {
+		left = x;
+		top = y;
+		right = x + BAG_BOX_WIDTH;
+		bottom = y + BAG_BOX_HEIGHT;
 	}
 }
