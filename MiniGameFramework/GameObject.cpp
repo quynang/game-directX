@@ -126,7 +126,7 @@ void CGameObject::RenderBoundingBox()
 	rect.right = (int)r - (int)l;
 	rect.bottom = (int)b - (int)t;
 
-	CGame::GetInstance()->Draw(l, t + 38, bbox, rect.left, rect.top, rect.right, rect.bottom, 100);
+	CGame::GetInstance()->Draw(l, t + 38, bbox, rect.left, rect.top, rect.right, rect.bottom, 0);
 }
 
 /* This method handle craked whip. Because Whip have special rendering and it don't have vx, vy....

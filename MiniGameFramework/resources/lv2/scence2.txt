@@ -55,6 +55,8 @@ resources/lv2/map-lv2.txt
 # 2: stair top
 # 4: candle
 # 5: Knight
+#Knight have extra info is limited the distance x
+5	50	50	1	-1	70
 #---- Brick----
 1	0	176	-1	-1
 1	16	176	-1	-1
@@ -91,8 +93,7 @@ resources/lv2/map-lv2.txt
 2	76	76	-1	-1	1
 #candle(animation_set_id = 51 vì nó nằm trong file simon.txt)
 4	90	125	3	2
-#Knight have extra info is limited the distance x
-5	50	50	1	-1	70
+
 #Bat
 6	50	30	2	-1
 # --- SCENE PORTAL ----

@@ -127,7 +127,8 @@ void CPlayScene::Update(DWORD dt)
 	timeLimit;
 	timeGone +=  dt;
 	int timeRemain =  timeLimit - (int)timeGone * 0.001;
-	gameStatusBoard->Update(timeRemain);
+	int currentHP = player->getHP();
+	gameStatusBoard->Update(timeRemain, currentHP);
 
 
 	if (!offUpdation) {

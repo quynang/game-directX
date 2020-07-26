@@ -18,6 +18,7 @@
 #define SIMON_STATE_HITTING_ON_STAIR	1000
 #define SIMON_STATE_FREEZE	1100
 #define SIMON_STATE_ON_MOVING_BRICK	1200
+#define SIMON_STATE_DIE	1300
 
 #define SIMON_ANI_IDLE_RIGHT	0
 #define SIMON_ANI_IDLE_LEFT		1
@@ -52,6 +53,7 @@
 
 #define SIMON_FREEZE_TIME	1000
 #define SIMON_JUMPING_TIME	400
+#define SIMON_UNTOUCHABLE_TIME	5000
 
 #define SIMON_BOX_WIDTH	16
 #define SIMON_BOX_HEIGHT	30
@@ -60,6 +62,7 @@ class CSimon : public CGameObject
 {
 	int level;
 	int untouchable;
+	int hp = 1600;
 	DWORD untouchable_start;
 	float start_x;
 	float start_y;
@@ -97,6 +100,8 @@ public:
 	bool checkIsHitting() { return isHitting; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	void Reset();
+	int getHP() { return hp; }
+	void decreaseHP(int _hp) { hp -= _hp; }
 	void StartJump() { start_jump = GetTickCount(); }
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void StartFreezeState();
@@ -105,7 +110,8 @@ public:
 		bool isClimbing,
 		bool canClimbUp,
 		bool canClimbDown,
-		int state
+		int state,
+		int hp
 	);
 
 	void getSimonBackupInfoNeeded(
@@ -113,7 +119,8 @@ public:
 		bool& isClimbing,
 		bool& canClimbUp,
 		bool& canClimbDown,
-		int& state
+		int& state,
+		int& hp
 	)
 	{
 		whipLevel = this->whip->getCurrentLevel();
@@ -121,5 +128,6 @@ public:
 		canClimbUp = this->canClimbUp;
 		canClimbDown = this->canClimbDown;
 		state = this->state;
+		hp = this->hp;
 	};
 };

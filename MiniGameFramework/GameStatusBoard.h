@@ -26,11 +26,12 @@ class CGameStatusBoard
 	int energy;
 	int life;
 	int stage = 1;
+	int hpRemain = 16;
 	CGameStatusBoard();
 	~CGameStatusBoard();
 public:
 	static CGameStatusBoard* GetInstance();
-	void Update(int timeRemain);
+	void Update(int timeRemain, int hp);
 	void IncreaseScore(int value) { score += value; }
 	void Render();
 };

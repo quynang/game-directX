@@ -390,9 +390,10 @@ void CGame::SwitchScene(int scene_id)
 	bool canClimbUp;
 	bool canClimbDown;
 	int state;
+	int hp;
 
 	if (scene_id != game_scene_start) {
-		((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer()->getSimonBackupInfoNeeded(whipLevel, isClimbing, canClimbUp, canClimbDown, state);
+		((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer()->getSimonBackupInfoNeeded(whipLevel, isClimbing, canClimbUp, canClimbDown, state, hp);
 	}
 	
 
@@ -408,5 +409,5 @@ void CGame::SwitchScene(int scene_id)
 	CGame::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
 	s->Load();
 
-	if(scene_id != game_scene_start) ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer()->useSimonBackupWithInfoNeeded(whipLevel, isClimbing, canClimbUp, canClimbDown, state);
+	if(scene_id != game_scene_start) ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer()->useSimonBackupWithInfoNeeded(whipLevel, isClimbing, canClimbUp, canClimbDown, state, hp);
 }

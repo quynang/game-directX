@@ -16,12 +16,13 @@
 #include "StairBottom.h"
 #include "StairTop.h"
 #include "BrickMoving.h"
+#include "Knight.h"
 
 CSimon::CSimon(float x, float y) : CGameObject()
 {
 	untouchable = 0;
 	SetState(SIMON_STATE_IDLE);
-
+	int untouchable = false;
 	start_x = x;
 	start_y = y;
 	this->x = x;
@@ -39,7 +40,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	whip->Update(dt, coObjects);
 	CGameObject::Update(dt);
-	DebugOut(L"[INFO] Is colliding with brick moving: %f \n", vx);
 	if(!isClimbing)
 		vy += SIMON_GRAVITY*dt;
 
@@ -47,6 +47,14 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		start_jump = 0;
 		canJump = true;
+	}
+
+	
+	// reset untouchable timer if untouchable time has passed
+	if ( GetTickCount() - untouchable_start > SIMON_UNTOUCHABLE_TIME) 
+	{
+		untouchable_start = 0;
+		untouchable = 0;
 	}
 
 	if (isFreeze && (GetTickCount() - freezeTimer > SIMON_FREEZE_TIME)) 
@@ -116,7 +124,8 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	
 	coEvents.clear();
 
-	CalcPotentialCollisions(coObjects, coEvents);
+	if (state!=SIMON_STATE_DIE)
+		CalcPotentialCollisions(coObjects, coEvents);
 
 	if (coEvents.size()==0)
 	{
@@ -142,12 +151,21 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
+			if (dynamic_cast<CKnight*>(e->obj)) {
+				x += rdx; //Đối với những object moving như thế này. Ta cần thực hiện cập nhật x để tránh việc simon bị block.
+				if (untouchable == 0) {
+					decreaseHP(200);
+					StartUntouchable();
+				}
+				
+				//SetState(SIMON_STATE_DIE);
+			}
 
 			if (dynamic_cast<CBrickMoving*>(e->obj)) {
 				CBrickMoving* brickMoving = dynamic_cast<CBrickMoving*>(e->obj);
 				vx = brickMoving->getMovingSpeed()*2;
 			}
-			if (dynamic_cast<CWheapon*>(e->obj))
+			else if (dynamic_cast<CWheapon*>(e->obj))
 			{
 				CWheapon* wheapon = dynamic_cast<CWheapon*>(e->obj);
 				wheapon->SetVisible(false);
@@ -156,14 +174,14 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				StartFreezeState();
 			}
 
-			if (dynamic_cast<CTourchFlame*>(e->obj)) {
+			else if (dynamic_cast<CTourchFlame*>(e->obj)) {
 				x += dx;
 				if (e->ny < 0) {
 					y += dy;
 				}
 			}
 
-			if (dynamic_cast<CStairBottom*>(e->obj)) {
+			else if (dynamic_cast<CStairBottom*>(e->obj)) {
 				CStairBottom* stairBottom = dynamic_cast<CStairBottom*>(e->obj);
 				x += dx;
 				if (e->ny < 0) {
@@ -172,32 +190,32 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 			}
 
-			if (dynamic_cast<CStairTop*>(e->obj)) {
+			else if (dynamic_cast<CStairTop*>(e->obj)) {
 				x += dx;
 				if (e->ny < 0) {
 					y += STAIR_TOP_BOX_HEIGHT;
 				}
 			}
 	
-			if (dynamic_cast<CHeart*>(e->obj)) {
+			else if (dynamic_cast<CHeart*>(e->obj)) {
 				CHeart* heart = dynamic_cast<CHeart*>(e->obj);
 				heart->SetVisible(false);
 				//((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->TurnOffGameUpdationByTimer(3000);
 			}
 
-			if (dynamic_cast<CWhiteBag*>(e->obj)) {
+			else if (dynamic_cast<CWhiteBag*>(e->obj)) {
 				CWhiteBag* whiteBag = dynamic_cast<CWhiteBag*>(e->obj);
 				whiteBag->SetVisible(false);
 				CGameStatusBoard::GetInstance()->IncreaseScore(200);
 			}
 
-			if (dynamic_cast<CPurpleBag*>(e->obj)) {
+			else if (dynamic_cast<CPurpleBag*>(e->obj)) {
 				CPurpleBag* purple = dynamic_cast<CPurpleBag*>(e->obj);
 				purple->SetVisible(false);
 				CGameStatusBoard::GetInstance()->IncreaseScore(500);
 			}
 
-			if (dynamic_cast<CBrick*>(e->obj)) {
+			else if (dynamic_cast<CBrick*>(e->obj)) {
 				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
 				if (e->ny > 0 || isClimbing) {
 					y += dy;
@@ -206,7 +224,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				//((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->TurnOffGameUpdationByTimer(3000);
 			}
 
-			 if (dynamic_cast<CPortal *>(e->obj)) {
+			 else if (dynamic_cast<CPortal *>(e->obj)) {
 		
 				CPortal *p = dynamic_cast<CPortal *>(e->obj);
 				CGame::GetInstance()->SwitchScene(p->GetSceneId());
@@ -288,6 +306,7 @@ void CSimon::Render()
 			else ani = SIMON_ANI_IDLE_LEFT;
 	};
 
+	if (untouchable) alpha = 128;
 	animation_set->at(ani)->Render(x, y, alpha);
 	if(isHitting) UseWhip(animation_set->at(ani)->GetCurrentFrame());
 
@@ -525,7 +544,8 @@ void CSimon::useSimonBackupWithInfoNeeded(
 	bool isClimbing,
 	bool canClimbUp,
 	bool canClimbDown,
-	int state
+	int state,
+	int hp
 )
 {
 	this->whip->SetLevel(whipLevel);
@@ -533,4 +553,5 @@ void CSimon::useSimonBackupWithInfoNeeded(
 	this->canClimbUp = canClimbUp;
 	this->canClimbDown = canClimbDown;
 	this->state = state;
+	this->hp = hp;
 }

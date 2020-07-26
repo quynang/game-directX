@@ -54,7 +54,7 @@ CGameStatusBoard::CGameStatusBoard()
 
 	SetRect(&rectRowOne, 60, 5, ScreenWidth , 85);
 	SetRect(&rectRowTwo, 202, 15, ScreenWidth, 85);
-	SetRect(&rectRowThree, 60, 25, ScreenWidth, 85);
+	SetRect(&rectRowThree, 202, 25, ScreenWidth, 85);
 	inforRowOne = L"";
 	inforRowTwo = L"";
 	inforRowThree = L"";
@@ -66,10 +66,9 @@ CGameStatusBoard::~CGameStatusBoard()
 }
 
 
-void CGameStatusBoard::Update(int timeRemain)
+void CGameStatusBoard::Update(int timeRemain, int hp)
 {
-	
-
+	hpRemain = hp / 100;
 	wstring scoreString = to_wstring(score);
 	while (scoreString.length() < 6)
 		scoreString = L"0" + scoreString;
@@ -89,6 +88,7 @@ void CGameStatusBoard::Update(int timeRemain)
 
 	inforRowOne = scoreString + L"            " + timeString + L"      TAGE" + stageString + L"\n";
 	inforRowTwo = heartString;
+	inforRowThree = L"03";
 }
 
 void CGameStatusBoard::Render()
@@ -96,11 +96,13 @@ void CGameStatusBoard::Render()
 	float _cx, _cy;
     CGame::GetInstance()->GetCamPos(_cx, _cy);
 	statusBoardSprite->Draw( _cx + 5, -38);
+	//Cục màu trắng vẽ lên đầu tiên
 	for (int i = 1; i <= 16; i++) {
 		hpSprite2->Draw( _cx + 52 + i*6, -22);
 	}
 
-	for (int i = 1; i <= 5; i++) {
+	//Cục màu đỏ vẽ đè lên
+	for (int i = 1; i <= hpRemain; i++) {
 		hpSprite1->Draw( _cx + 52 + i*6, -22);
 	}
 
