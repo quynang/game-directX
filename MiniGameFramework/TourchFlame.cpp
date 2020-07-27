@@ -36,16 +36,20 @@ void CTourchFlame::SetVisible(bool value) {
 }
 
 void CTourchFlame::SetState(int state) {
-	switch (state) {
-	case TOURCH_FLAME_STATE_DESTROY:
-		isVisible = false;
-		CItem *item = CItem::Create(item_type, x, y);
-		item->SetVisible(true);
-		((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(item);
-		hitEffect->SetPosition(x + 5, y + 5);
-		hitEffect->setIsVisible(true);
-		fireBombEffect->SetPosition(x + 5, y + 5);
-		fireBombEffect->setIsVisible(true);
-		
+
+	if (this->state != TOURCH_FLAME_STATE_DESTROY) {
+		CGameObject::SetState(state);
+		switch (state) {
+		case TOURCH_FLAME_STATE_DESTROY:
+			isVisible = false;
+			CItem* item = CItem::Create(item_type, x, y);
+			item->SetVisible(true);
+			((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(item);
+			hitEffect->SetPosition(x + 5, y + 5);
+			hitEffect->setIsVisible(true);
+			fireBombEffect->SetPosition(x + 5, y + 5);
+			fireBombEffect->setIsVisible(true);
+
+		}
 	}
 }
