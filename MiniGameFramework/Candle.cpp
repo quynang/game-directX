@@ -37,17 +37,20 @@ void CCandle::SetVisible(bool value) {
 }
 
 void CCandle::SetState(int state) {
-	switch (state) {
-	case CANDLE_STATE_DESTROY: 
-		isVisible = false;
-		CItem *item = CItem::Create(item_type, x, y);
-		item->SetVisible(true);
-		((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(item);
+	if (this->state != CANDLE_STATE_DESTROY) {
+		CGameObject::SetState(state);
+		switch (state) {
+		case CANDLE_STATE_DESTROY:
+			isVisible = false;
+			CItem* item = CItem::Create(item_type, x, y);
+			item->SetVisible(true);
+			((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(item);
 
-		hitEffect->SetPosition(x + 5, y + 5);
-		hitEffect->setIsVisible(true);
-		fireBombEffect->SetPosition(x + 5, y + 5);
-		fireBombEffect->setIsVisible(true);
-		
+			hitEffect->SetPosition(x + 5, y + 5);
+			hitEffect->setIsVisible(true);
+			fireBombEffect->SetPosition(x + 5, y + 5);
+			fireBombEffect->setIsVisible(true);
+	
+		}
 	}
 }

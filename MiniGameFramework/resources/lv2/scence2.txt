@@ -52,7 +52,7 @@ resources/lv2/map-lv2.txt
 # type	x	y	ani_set_id(-1: hidden box)	item_type
 # 1: brick lv0
 # 2: stair bottom
-# 2: stair top
+# 3: stair top
 # 4: candle
 # 5: Knight
 #Knight have extra info is limited the distance x
@@ -91,8 +91,9 @@ resources/lv2/map-lv2.txt
 3	160	102	-1	-1
 #Stair Bottom 
 2	76	76	-1	-1	1
-#candle(animation_set_id = 51 vì nó nằm trong file simon.txt)
+#candle
 4	90	125	3	2
+4	182	145	3	5
 
 #Bat
 6	50	30	2	-1

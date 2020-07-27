@@ -6,6 +6,7 @@
 #define TYPE_WHEAPON	2
 #define TYPE_WHITE_BAG	3
 #define TYPE_PURPLE_BAG	4
+#define TYPE_LARGE_HEART	5
 #define TYPE_UNKNOWN	-1
 
 #define WHEAPON_BOX_WIDTH	16
@@ -14,6 +15,9 @@
 
 #define HEART_BOX_WIDTH	8
 #define HEART_BOX_HEIGHT	8
+
+#define LARGE_HEART_BOX_WIDTH	12
+#define LARGE_HEART_BOX_HEIGHT	10
 
 #define BAG_BOX_WIDTH	15
 #define BAG_BOX_HEIGHT	15
@@ -37,6 +41,16 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	void Render();
 };
+
+class CLargeHeart : public CItem
+{
+public:
+	CLargeHeart(float x, float y);
+	void GetBoundingBox(float &left, float& top, float &right, float &bottom);
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
+	void Render();
+};
+
 
 class CWheapon : public CItem
 {

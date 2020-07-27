@@ -23,16 +23,15 @@ class CGameStatusBoard
 	int score = 0;
 	int item;
 	int heart = 5;
-	int energy;
-	int life;
 	int stage = 1;
 	int hpRemain = 16;
 	CGameStatusBoard();
 	~CGameStatusBoard();
 public:
 	static CGameStatusBoard* GetInstance();
-	void Update(int timeRemain, int hp);
+	void Update(int timeRemain, int hp, int stage);
 	void IncreaseScore(int value) { score += value; }
+	void IncreaseNumHeart(int value) { heart += value; }
 	void Render();
 };
 

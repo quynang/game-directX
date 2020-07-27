@@ -66,9 +66,10 @@ CGameStatusBoard::~CGameStatusBoard()
 }
 
 
-void CGameStatusBoard::Update(int timeRemain, int hp)
+void CGameStatusBoard::Update(int timeRemain, int hp, int stage)
 {
 	hpRemain = hp / 100;
+	this->stage = stage;
 	wstring scoreString = to_wstring(score);
 	while (scoreString.length() < 6)
 		scoreString = L"0" + scoreString;
@@ -81,7 +82,7 @@ void CGameStatusBoard::Update(int timeRemain, int hp)
 	while (heartString.length() < 2)
 		heartString = L"0" + heartString;
 
-	wstring stageString =  L"1";
+	wstring stageString =  to_wstring(stage);
 	while (stageString.length() < 2)
 		stageString = L"0" + stageString;
 

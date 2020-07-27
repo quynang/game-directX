@@ -203,7 +203,13 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (dynamic_cast<CHeart*>(e->obj)) {
 				CHeart* heart = dynamic_cast<CHeart*>(e->obj);
 				heart->SetVisible(false);
-				//((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->TurnOffGameUpdationByTimer(3000);
+				CGameStatusBoard::GetInstance()->IncreaseNumHeart(1);
+			}
+
+			else if (dynamic_cast<CLargeHeart*>(e->obj)) {
+				CLargeHeart* largeHeart = dynamic_cast<CLargeHeart*>(e->obj);
+				largeHeart->SetVisible(false);
+				CGameStatusBoard::GetInstance()->IncreaseNumHeart(5);
 			}
 
 			else if (dynamic_cast<CWhiteBag*>(e->obj)) {
