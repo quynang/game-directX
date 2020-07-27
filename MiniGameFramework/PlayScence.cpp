@@ -200,6 +200,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		if(!simon->checkIsClimbing() && simon->checkCanJump())
 			simon->SetState(SIMON_STATE_JUMP);
 		break;
+	case DIK_S:
+		simon->SetState(SIMON_STATE_USE_SUBWEAPON);
+		break;
 	case DIK_A:
 		simon->Reset();
 		break;

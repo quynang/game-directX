@@ -12,11 +12,13 @@
 #include "Item.h"
 #include "TourchFlame.h"
 #include "PlayScence.h"
-#include"Brick.h"
+#include "Brick.h"
 #include "StairBottom.h"
 #include "StairTop.h"
 #include "BrickMoving.h"
 #include "Knight.h"
+#include "SubWeapon.h"
+#include "SubWeapon.h"
 
 CSimon::CSimon(float x, float y) : CGameObject()
 {
@@ -161,10 +163,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				//SetState(SIMON_STATE_DIE);
 			}
 
-			if (dynamic_cast<CBrickMoving*>(e->obj)) {
-				CBrickMoving* brickMoving = dynamic_cast<CBrickMoving*>(e->obj);
-				vx = brickMoving->getMovingSpeed()*2;
-			}
 			else if (dynamic_cast<CWheapon*>(e->obj))
 			{
 				CWheapon* wheapon = dynamic_cast<CWheapon*>(e->obj);
@@ -179,6 +177,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->ny < 0) {
 					y += dy;
 				}
+			}
+
+			else if (dynamic_cast<CBoomerang*>(e->obj)) {
+				CBoomerang* boomerang = dynamic_cast<CBoomerang*>(e->obj);
+				boomerang->SetVisible(false);
 			}
 
 			else if (dynamic_cast<CStairBottom*>(e->obj)) {
@@ -222,6 +225,12 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					x += dx;
 				}
 				//((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->TurnOffGameUpdationByTimer(3000);
+			}
+
+			if (dynamic_cast<CBrickMoving*>(e->obj)) {
+				CBrickMoving* brickMoving = dynamic_cast<CBrickMoving*>(e->obj);
+				vx = brickMoving->getMovingSpeed()*2;
+				x += dx;
 			}
 
 			 else if (dynamic_cast<CPortal *>(e->obj)) {
@@ -298,9 +307,24 @@ void CSimon::Render()
 				ani = SIMON_ANI_ASCENDING_STAIR_LEFT_AND_HITTING;
 			isHitting = true;
 			break;
-		case SIMON_STATE_ON_MOVING_BRICK:
-			if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
-			else ani = SIMON_ANI_IDLE_LEFT;
+		case SIMON_STATE_USE_SUBWEAPON:
+			if (isClimbing) {
+				if (nx_stair > 0 && nx > 0)
+				ani = SIMON_ANI_ASCENDING_STAIR_RIGHT_AND_HITTING;
+			else if (nx_stair > 0 && nx < 0)
+				ani = SIMON_ANI_DESCENDING_STAIR_LEFT_AND_HITTING;
+			else if (nx_stair < 0 && nx > 0)
+				ani = SIMON_ANI_DESCENDING_STAIR_RIGHT_AND_HITTING;
+			else if (nx_stair > 0 && nx < 0)
+				ani = SIMON_ANI_ASCENDING_STAIR_LEFT_AND_HITTING;
+			}
+			else {
+				if (nx > 0) ani = SIMON_ANI_STANDING_HITTING_RIGHT;
+				else ani = SIMON_ANI_STANDING_HITTING_LEFT;
+			}
+			
+			isUseSubWeapon = true;
+			break;
 		default:
 			if (nx > 0) ani = SIMON_ANI_IDLE_RIGHT;
 			else ani = SIMON_ANI_IDLE_LEFT;
@@ -310,12 +334,14 @@ void CSimon::Render()
 	animation_set->at(ani)->Render(x, y, alpha);
 	if(isHitting) UseWhip(animation_set->at(ani)->GetCurrentFrame());
 
-	if (isHitting == true && animation_set->at(ani)->isLastFrame()) isHitting = false; 
+	if (isHitting == true && animation_set->at(ani)->isLastFrame()) isHitting = false;
+	if (isUseSubWeapon == true && animation_set->at(ani)->isLastFrame()) { UseSubWeapon(); isUseSubWeapon = false; }
+	
 	
 	
 	if (vy > 0) isJumping = false;
 	
-	if (isHitting == false || isJumping == false) {
+	if (isHitting == false || isJumping == false || isUseSubWeapon == false) {
 		if (isClimbing) SetState(SIMON_STATE_IDLE_ON_STAIR);
 		else  SetState(SIMON_STATE_IDLE);
 	}
@@ -376,6 +402,25 @@ void CSimon::UseWhip(int currentFrame) {
 }
 
 
+void CSimon::UseSubWeapon() {
+	DebugOut(L"[INFO] use subweapon ! \n");
+	float pos_x;
+	if (nx > 0)	pos_x = this->x  +  BOOMERANG_BOX_WIDTH;
+	else pos_x = x - BOOMERANG_BOX_WIDTH - 5;
+	float cx, cy;
+	CGame::GetInstance()->GetCamPos(cx, cy);
+	float limit_distance;
+	if (nx > 0) limit_distance = CGame::GetInstance()->GetScreenWidth() - (this->x - cx + 15);
+	else limit_distance = this->x - cx;
+	CBoomerang* subWeapon = new CBoomerang(pos_x, this->y, limit_distance);
+	subWeapon->setDirection(nx);
+	subWeapon->SetVisible(true);
+	subWeapon->SetState(BOOMERANG_STATE_THROW_AWAY);
+	
+	
+	((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(subWeapon);
+}
+
 void CSimon::SetState(int state)
 {
 	//Vì trong trạng thái Ducking, ta chỉ có thể SetSate ngồi và đánh.
@@ -388,8 +433,9 @@ void CSimon::SetState(int state)
 	
 	//Nếu simon trong thái hitting, ducking, jumping thì không thực hiện đổi state được. Vì nó cần thời gian để kết thúc trạng thái hiện tại.
 	//Ví dụ: simon đang đánh thì phải đợi nó đánh hết 1 vòng (nghĩa là đợi nó render hết 1 vòng animations của hitting) rồi ta mới được SetState khác.
-	if (!isHitting && !isJumping && !isFreeze && !isDucking) {
+	if (!isUseSubWeapon && !isHitting && !isJumping && !isFreeze && !isDucking) {
 		
+		CGameObject::SetState(state);
 
 		switch (state)
 		{
@@ -438,13 +484,14 @@ void CSimon::SetState(int state)
 			vx = 0;
 			vy = 0;
 			break;
+		/*case SIMON_STATE_USE_SUBWEAPON:
+			vx = 0; 
+			break;*/
 		case SIMON_STATE_FREEZE:
 			vx = 0;
 			vy = 0;
 			break;
 		}
-
-		CGameObject::SetState(state);
 	}
 }
 

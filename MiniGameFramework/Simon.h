@@ -4,6 +4,7 @@
 #define SIMON_WALKING_SPEED		0.07f 
 #define SIMON_JUMP_SPEED_Y		0.35f
 #define SIMON_GRAVITY			0.0018f
+#define SIMON_JUMP_DEFLECT_SPEED 0.001f
 
 #define SIMON_STATE_IDLE			0
 #define SIMON_STATE_WALKING_RIGHT	100
@@ -19,6 +20,7 @@
 #define SIMON_STATE_FREEZE	1100
 #define SIMON_STATE_ON_MOVING_BRICK	1200
 #define SIMON_STATE_DIE	1300
+#define SIMON_STATE_USE_SUBWEAPON	1400
 
 #define SIMON_ANI_IDLE_RIGHT	0
 #define SIMON_ANI_IDLE_LEFT		1
@@ -73,6 +75,7 @@ class CSimon : public CGameObject
 	bool canClimbDown = false;
 	bool canClimbUp = false;
 	bool isDucking = false;
+	bool isUseSubWeapon = false;
 	bool canJump = true;
 	int nx_stair = 1;
 	DWORD start_jump;
@@ -81,8 +84,10 @@ class CSimon : public CGameObject
 	bool isOnMovingBrick = false;
 
 	void UseWhip(int currentFrame);
+	void UseSubWeapon();
 
-public: 
+public:
+	
 	CSimon(float x = 0.0f, float y = 0.0f);
 	void Load(LPCWSTR filePath);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);

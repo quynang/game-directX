@@ -148,6 +148,7 @@
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="StairBottom.h" />
     <ClInclude Include="StairTop.h" />
+    <ClInclude Include="SubWeapon.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="TileSet.h" />
     <ClInclude Include="TourchFlame.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="StairBottom.cpp" />
     <ClCompile Include="StairTop.cpp" />
+    <ClCompile Include="SubWeapon.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="TileSet.cpp" />
     <ClCompile Include="TourchFlame.cpp" />
